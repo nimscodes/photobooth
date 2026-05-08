@@ -9,7 +9,7 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
   if (!authed) redirect("/admin/login");
 
   const { id } = await params;
-  const booking = getBookingById(id);
+  const booking = await getBookingById(id);
   if (!booking) notFound();
 
   const pkg = PACKAGES.find((p) => p.id === booking.packageId);

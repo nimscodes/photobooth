@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { isAdminAuthenticated } from "@/lib/auth";
-import { getBookingById, getBookings } from "@/lib/storage";
+import { getBookingById, getBookings, Booking } from "@/lib/storage";
 import { BUSINESS_NAME } from "@/lib/packages";
 
 function toICSDate(dateStr: string, timeStr?: string): string {
@@ -16,7 +16,7 @@ function escapeICS(str: string): string {
   return str.replace(/\\/g, "\\\\").replace(/;/g, "\\;").replace(/,/g, "\\,").replace(/\n/g, "\\n");
 }
 
-function buildEvent(b: ReturnType<typeof getBookingById>): string {
+function buildEvent(b: Booking | undefined): string {
   if (!b) return "";
   const uid = `${b.id}@flashphotobooth`;
   const dtStart = toICSDate(b.eventDate, b.eventStartTime);
@@ -61,11 +61,12 @@ export async function GET(req: NextRequest) {
 
   let events: string[];
   if (id) {
-    const b = getBookingById(id);
+    const b = await getBookingById(id);
     if (!b) return NextResponse.json({ error: "Not found" }, { status: 404 });
     events = [buildEvent(b)];
   } else {
-    events = getBookings()
+    const all = await getBookings();
+    events = all
       .filter((b) => b.status !== "cancelled" && b.intentType === "book")
       .map(buildEvent)
       .filter(Boolean);

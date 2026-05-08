@@ -7,8 +7,7 @@ export default async function AdminPage() {
   const authed = await isAdminAuthenticated();
   if (!authed) redirect("/admin/login");
 
-  const bookings = getBookings();
-  const blockedDates = getBlockedDates();
+  const [bookings, blockedDates] = await Promise.all([getBookings(), getBlockedDates()]);
 
   return <AdminDashboard bookings={bookings} blockedDates={blockedDates} />;
 }

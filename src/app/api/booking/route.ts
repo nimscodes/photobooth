@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
     return NextResponse.json({ error: "Invalid email address." }, { status: 400 });
 
-  if (isDateUnavailable(eventDate))
+  if (await isDateUnavailable(eventDate))
     return NextResponse.json({ error: "That date is no longer available. Please choose another." }, { status: 409 });
 
   if (intentType === "questions" && !body.question)
@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
     notes: typeof body.notes === "string" ? body.notes : undefined,
   };
 
-  saveBooking(booking);
+  await saveBooking(booking);
 
   Promise.all([sendBookingConfirmation(booking), sendOwnerNotification(booking)])
     .catch(err => console.error("[EMAIL]", err));
