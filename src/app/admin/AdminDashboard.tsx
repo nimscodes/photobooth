@@ -5,8 +5,9 @@ import { format } from "date-fns";
 import { Booking } from "@/lib/storage";
 import { PACKAGES } from "@/lib/packages";
 import Calendar from "@/components/Calendar";
+import GalleryManager from "./GalleryManager";
 
-type Tab = "bookings" | "calendar" | "settings";
+type Tab = "bookings" | "calendar" | "gallery" | "settings";
 
 export default function AdminDashboard({ bookings: init, blockedDates: initBlocked }: { bookings: Booking[]; blockedDates: string[] }) {
   const [tab, setTab] = useState<Tab>("bookings");
@@ -74,7 +75,7 @@ export default function AdminDashboard({ bookings: init, blockedDates: initBlock
         </div>
 
         <div className="flex gap-1 mb-6 bg-white/5 rounded-xl p-1 w-fit">
-          {(["bookings", "calendar", "settings"] as Tab[]).map(t => (
+          {(["bookings", "calendar", "gallery", "settings"] as Tab[]).map(t => (
             <button key={t} onClick={() => setTab(t)} className={`px-5 py-2 rounded-lg text-sm font-medium capitalize transition-colors ${tab === t ? "bg-[#c9a84c] text-[#0f0f1a]" : "text-white/50 hover:text-white"}`}>{t}</button>
           ))}
         </div>
@@ -166,6 +167,8 @@ export default function AdminDashboard({ bookings: init, blockedDates: initBlock
             {msg && <p className="mt-2 text-green-400 text-sm">{msg}</p>}
           </div>
         )}
+
+        {tab === "gallery" && <GalleryManager />}
 
         {tab === "settings" && (
           <div className="max-w-xl space-y-6">
