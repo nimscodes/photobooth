@@ -12,8 +12,8 @@ export const metadata: Metadata = {
     default: `${BUSINESS_NAME} — Photo Booth Rental in ${BUSINESS_CITY}`,
     template: `%s | ${BUSINESS_NAME}`,
   },
-  description: `Premium photo booth rental in ${BUSINESS_CITY}. Unlimited prints, digital gallery, custom backdrops, and dedicated attendants for weddings, birthdays, and corporate events.`,
-  keywords: ["photo booth rental", "photo booth", BUSINESS_CITY, "wedding photo booth", "birthday photo booth", "corporate event photo booth"],
+  description: `Luxury photo booth rentals in ${BUSINESS_CITY}. 360 Video Booth & Open-Air iPad Booth for weddings, birthdays, corporate events, and celebrations across Fort Worth and surrounding areas.`,
+  keywords: ["photo booth rental", "360 video booth", "photo booth Fort Worth", "photo booth Haslet TX", BUSINESS_CITY, "wedding photo booth", "birthday photo booth", "corporate event photo booth"],
   openGraph: {
     type: "website",
     siteName: BUSINESS_NAME,

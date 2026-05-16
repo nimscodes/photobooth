@@ -18,97 +18,94 @@ export interface AddOn {
 
 export const PACKAGES: Package[] = [
   {
-    id: "basic",
-    name: "Basic",
-    price: 399,
+    id: "snapshot",
+    name: "Snapshot",
+    price: 350,
     hours: 2,
-    description: "Perfect for smaller gatherings and casual events",
+    description: "Perfect for intimate parties & small gatherings",
     features: [
-      "2-hour rental",
-      "Unlimited prints",
-      "Digital copies included",
-      "Fun prop collection",
-      "Photo strip templates",
+      "2-hour Open-Air iPad Booth",
+      "Digital sharing (QR / text / email)",
+      "Standard backdrop & basic props",
       "Online gallery delivery",
     ],
   },
   {
-    id: "standard",
-    name: "Standard",
-    price: 549,
+    id: "spotlight",
+    name: "Spotlight",
+    price: 600,
     hours: 3,
-    description: "Our most popular choice for birthdays and parties",
+    description: "Most popular for birthdays & celebrations",
     features: [
-      "3-hour rental",
-      "Unlimited prints",
-      "Digital gallery",
-      "Premium prop collection",
-      "Dedicated attendant",
-      "Custom photo template",
+      "3-hour Open-Air iPad Booth",
+      "Digital sharing + basic prints (optional)",
+      "Custom template overlay",
+      "Professional attendant",
       "Online gallery delivery",
     ],
     popular: true,
   },
   {
-    id: "premium",
-    name: "Premium",
-    price: 699,
+    id: "red-carpet",
+    name: "Red Carpet",
+    price: 900,
     hours: 4,
-    description: "Ideal for weddings and upscale corporate events",
+    description: "Luxury experience for weddings & upscale events",
     features: [
-      "4-hour rental",
-      "Unlimited prints",
-      "Digital gallery",
-      "Premium prop collection",
-      "Dedicated attendant",
-      "Custom backdrop",
-      "Custom logo/overlay",
-      "Social sharing station",
+      "4-hour 360 Video Booth",
+      "Unlimited shares",
+      "Custom branding/logo on videos",
+      "Premium backdrop + props",
+      "Attendant on site",
+      "Online gallery delivery",
     ],
   },
   {
-    id: "deluxe",
-    name: "Deluxe",
-    price: 899,
-    hours: 5,
-    description: "The ultimate experience — everything included",
+    id: "vip",
+    name: "VIP Experience",
+    price: 1500,
+    hours: 6,
+    description: "The ultimate all-inclusive photo booth package",
     features: [
-      "5-hour rental",
-      "Unlimited prints",
-      "Digital gallery",
-      "Premium prop collection",
-      "Dedicated attendant",
-      "Custom backdrop",
-      "Custom logo/overlay",
-      "Social sharing station",
-      "Video booth option",
-      "Scrapbook / guestbook",
+      "3-hour 360 Video Booth",
+      "3-hour Open-Air iPad Booth",
+      "Unlimited shares",
+      "Digital delivery + prints",
+      "Custom branded overlays",
+      "Premium themed backdrop + props",
+      "Two attendants on site",
+      "Online gallery delivery",
     ],
   },
 ];
 
 export const ADD_ONS: AddOn[] = [
   {
-    id: "extra-hours",
-    name: "2 Extra Hours",
-    price: 199,
+    id: "extra-hour",
+    name: "Extra Hour",
+    price: 150,
+  },
+  {
+    id: "audio-guestbook",
+    name: "Audio Guestbook",
+    price: 250,
   },
   {
     id: "custom-overlay",
-    name: "Custom Logo / Overlay",
-    price: 75,
+    name: "Custom Logo Overlay",
+    price: 100,
     hasUpload: true,
   },
   {
-    id: "custom-backdrop",
-    name: "Custom Backdrop",
-    price: 125,
+    id: "branded-backdrop",
+    name: "Branded Backdrop",
+    price: 200,
     hasOptions: true,
   },
   {
-    id: "digital-only",
-    name: "Digital Only (no prints)",
-    price: -50,
+    id: "floral-wall",
+    name: "Floral Wall",
+    price: 350,
   },
 ];
 
@@ -129,9 +126,16 @@ export const BACKDROP_OPTIONS = [
   "Custom (describe in notes)",
 ];
 
-// ── Business Info ── update these to match your business ──────────────────────
-export const BUSINESS_NAME = "Flash Photo Booth";
-export const BUSINESS_TAGLINE = "Capture Every Smile";
-export const BUSINESS_PHONE = "(555) 123-4567";
-export const BUSINESS_EMAIL = "hello@flashphotobooth.com";
-export const BUSINESS_CITY = "Atlanta, GA";
+// ── Business Info ──────────────────────────────────────────────────────────────
+export const BUSINESS_NAME = "Elite Event Images";
+export const BUSINESS_TAGLINE = "Luxury Photo Booth Experiences";
+export const BUSINESS_PHONE = "(817) 555-0100";
+export const BUSINESS_EMAIL = "hello@eliteeventimages.com";
+export const BUSINESS_CITY = "Fort Worth, TX";
+export const BUSINESS_ADDRESS = "Haslet, TX";
+
+export const SOCIAL_LINKS = {
+  instagram: "https://www.instagram.com/elite_eventimages",
+  tiktok: "https://www.tiktok.com/@elite_eventimages",
+  facebook: "https://www.facebook.com/elite.eventimages",
+};
