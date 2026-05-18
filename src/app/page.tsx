@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { PACKAGES, BUSINESS_NAME, BUSINESS_CITY } from "@/lib/packages";
+import { PACKAGES } from "@/lib/packages";
+import { fetchSanity } from "../../sanity/lib/client";
 
 const FEATURES = [
   { icon: "🎥", title: "360 Video Booth", desc: "Stunning slow-motion 360° videos your guests will share instantly." },
@@ -16,47 +17,67 @@ const STEPS = [
   { n: "03", title: "We Handle the Rest", desc: "We arrive early, set up everything, and make sure your guests have a blast." },
 ];
 
-const FAQS = [
-  {
-    q: "How much space is needed?",
-    a: "We typically require an area of approximately 8x8 feet for setup and operation. This allows enough room for the booth, backdrop, props, and guests to comfortably enjoy the experience. If your venue has limited space, let us know and we'll help find the best setup option for your event.",
-  },
-  {
-    q: "Do you travel?",
-    a: "Yes! We proudly serve Fort Worth and surrounding areas. Travel within a certain radius may be included, while events outside of our standard service area may require an additional travel fee. Contact us with your event location for details.",
-  },
-  {
-    q: "How far in advance should I book?",
-    a: "We recommend booking as early as possible to secure your date, especially for weddings, holidays, and peak event seasons. Most clients book anywhere from 2–6 months in advance, but feel free to contact us for last-minute availability.",
-  },
-  {
-    q: "Do you provide attendants?",
-    a: "Yes! A professional booth attendant is included with select packages to assist guests, ensure everything runs smoothly, and help create the best possible experience throughout your event.",
-  },
-  {
-    q: "Can photos be texted instantly?",
-    a: "Absolutely! Guests can instantly receive their photos, GIFs, or boomerangs by text message, email, or digital sharing directly from the booth, depending on the package selected.",
-  },
-  {
-    q: "Is setup included?",
-    a: "Yes — setup and breakdown are included with every booking. We arrive before your event begins to ensure everything is fully set up and ready for your guests to enjoy.",
-  },
+const DEFAULT_HERO = {
+  headline: "Luxury Photo Booth Experiences for Unforgettable Events",
+  subtext: "Modern photo booth rentals for weddings, birthdays, corporate events, and celebrations across Fort Worth and the surrounding areas.",
+  stat1Value: "500+", stat1Label: "Events Captured",
+  stat2Value: "5.0★", stat2Label: "Average Rating",
+  stat3Value: "10K+", stat3Label: "Memories Made",
+};
+
+const DEFAULT_ABOUT = {
+  heading: "We Capture the Moments That Matter Most",
+  paragraph1: "At Elite Event Images, we believe every celebration deserves unforgettable moments. Our modern photo booth experiences are designed to bring people together, capture genuine memories, and add excitement to every event.",
+  paragraph2: "From weddings and birthdays to corporate events and private celebrations, we provide high-quality photo booth rentals that are stylish, interactive, and easy for guests of all ages to enjoy. With premium backdrops, fun props, instant digital sharing, and customizable experiences, we help turn special moments into lasting memories.",
+  paragraph3: "We pride ourselves on professionalism, reliability, and creating an experience your guests will talk about long after the event ends.",
+};
+
+const DEFAULT_CTA = {
+  heading: "Ready to Make Your Event Unforgettable?",
+  subtext: "Dates fill up fast — especially for weekends and holidays. Reserve yours today.",
+};
+
+const DEFAULT_FAQS = [
+  { _id: "1", question: "How much space is needed?", answer: "We typically require an area of approximately 8x8 feet for setup and operation. This allows enough room for the booth, backdrop, props, and guests to comfortably enjoy the experience. If your venue has limited space, let us know and we'll help find the best setup option for your event." },
+  { _id: "2", question: "Do you travel?", answer: "Yes! We proudly serve Fort Worth and surrounding areas. Travel within a certain radius may be included, while events outside of our standard service area may require an additional travel fee. Contact us with your event location for details." },
+  { _id: "3", question: "How far in advance should I book?", answer: "We recommend booking as early as possible to secure your date, especially for weddings, holidays, and peak event seasons. Most clients book anywhere from 2–6 months in advance, but feel free to contact us for last-minute availability." },
+  { _id: "4", question: "Do you provide attendants?", answer: "Yes! A professional booth attendant is included with select packages to assist guests, ensure everything runs smoothly, and help create the best possible experience throughout your event." },
+  { _id: "5", question: "Can photos be texted instantly?", answer: "Absolutely! Guests can instantly receive their photos, GIFs, or boomerangs by text message, email, or digital sharing directly from the booth, depending on the package selected." },
+  { _id: "6", question: "Is setup included?", answer: "Yes — setup and breakdown are included with every booking. We arrive before your event begins to ensure everything is fully set up and ready for your guests to enjoy." },
 ];
 
-export default function Home() {
+export const revalidate = 60;
+
+export default async function Home() {
+  const [homePage, faqs] = await Promise.all([
+    fetchSanity<{ hero?: typeof DEFAULT_HERO; about?: typeof DEFAULT_ABOUT; cta?: typeof DEFAULT_CTA }>(
+      `*[_type == "homePage"][0]{ hero, about, cta }`,
+      {}
+    ),
+    fetchSanity<typeof DEFAULT_FAQS>(
+      `*[_type == "faqItem"] | order(order asc){ _id, question, answer }`,
+      DEFAULT_FAQS
+    ),
+  ]);
+
+  const hero = { ...DEFAULT_HERO, ...homePage?.hero };
+  const about = { ...DEFAULT_ABOUT, ...homePage?.about };
+  const cta = { ...DEFAULT_CTA, ...homePage?.cta };
+  const faqList = faqs.length > 0 ? faqs : DEFAULT_FAQS;
+
   return (
     <>
       {/* Hero */}
       <section className="relative bg-[#0f0f1a] text-white overflow-hidden">
         <div className="absolute inset-0 opacity-20" style={{ backgroundImage: "radial-gradient(circle at 30% 50%, #c9a84c 0%, transparent 50%), radial-gradient(circle at 80% 20%, #7c3aed 0%, transparent 50%)" }} />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 sm:py-36 text-center">
-          <p className="text-[#c9a84c] text-sm font-semibold tracking-widest uppercase mb-4">Photo Booth Rental · {BUSINESS_CITY} & Surrounding Areas</p>
+          <p className="text-[#c9a84c] text-sm font-semibold tracking-widest uppercase mb-4">Photo Booth Rental · Fort Worth, TX & Surrounding Areas</p>
           <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold leading-tight tracking-tight mb-6">
-            Luxury Photo Booth Experiences for <span className="text-[#c9a84c]">Unforgettable Events</span>
+            {hero.headline.split("Unforgettable Events").length > 1 ? (
+              <>{hero.headline.split("Unforgettable Events")[0]}<span className="text-[#c9a84c]">Unforgettable Events</span></>
+            ) : hero.headline}
           </h1>
-          <p className="text-white/70 text-lg sm:text-xl max-w-2xl mx-auto mb-10">
-            Modern photo booth rentals for weddings, birthdays, corporate events, and celebrations across Fort Worth and the surrounding areas.
-          </p>
+          <p className="text-white/70 text-lg sm:text-xl max-w-2xl mx-auto mb-10">{hero.subtext}</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/booking" className="px-8 py-4 rounded-full bg-[#c9a84c] text-[#0f0f1a] font-bold text-base hover:bg-[#e0c06a] transition-all hover:scale-105 shadow-lg shadow-[#c9a84c]/20">
               Book Your Date →
@@ -66,7 +87,11 @@ export default function Home() {
             </Link>
           </div>
           <div className="mt-14 flex flex-wrap gap-8 justify-center">
-            {[["500+", "Events Captured"], ["5.0★", "Average Rating"], ["10K+", "Memories Made"]].map(([n, l]) => (
+            {[
+              [hero.stat1Value, hero.stat1Label],
+              [hero.stat2Value, hero.stat2Label],
+              [hero.stat3Value, hero.stat3Label],
+            ].map(([n, l]) => (
               <div key={l}><p className="text-3xl font-bold text-[#c9a84c]">{n}</p><p className="text-white/50 text-sm mt-0.5">{l}</p></div>
             ))}
           </div>
@@ -98,17 +123,11 @@ export default function Home() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
               <p className="text-[#c9a84c] text-sm font-semibold tracking-widest uppercase mb-3">About Us</p>
-              <h2 className="text-3xl sm:text-4xl font-bold mb-6">We Capture the Moments That Matter Most</h2>
+              <h2 className="text-3xl sm:text-4xl font-bold mb-6">{about.heading}</h2>
               <div className="space-y-4 text-white/70 leading-relaxed">
-                <p>
-                  At {BUSINESS_NAME}, we believe every celebration deserves unforgettable moments. Our modern photo booth experiences are designed to bring people together, capture genuine memories, and add excitement to every event.
-                </p>
-                <p>
-                  From weddings and birthdays to corporate events and private celebrations, we provide high-quality photo booth rentals that are stylish, interactive, and easy for guests of all ages to enjoy. With premium backdrops, fun props, instant digital sharing, and customizable experiences, we help turn special moments into lasting memories.
-                </p>
-                <p>
-                  We pride ourselves on professionalism, reliability, and creating an experience your guests will talk about long after the event ends.
-                </p>
+                <p>{about.paragraph1}</p>
+                <p>{about.paragraph2}</p>
+                <p>{about.paragraph3}</p>
               </div>
               <Link href="/booking" className="inline-block mt-8 px-8 py-4 rounded-full bg-[#c9a84c] text-[#0f0f1a] font-bold hover:bg-[#e0c06a] transition-colors">
                 Let&apos;s Make Your Event Unforgettable →
@@ -191,10 +210,10 @@ export default function Home() {
             <h2 className="text-3xl sm:text-4xl font-bold text-[#1a1a2e]">Frequently Asked Questions</h2>
           </div>
           <div className="space-y-4">
-            {FAQS.map(({ q, a }) => (
-              <div key={q} className="bg-white rounded-2xl p-6 shadow-sm">
-                <p className="font-semibold text-[#1a1a2e] mb-2">{q}</p>
-                <p className="text-[#1a1a2e]/60 text-sm leading-relaxed">{a}</p>
+            {faqList.map(({ _id, question, answer }) => (
+              <div key={_id} className="bg-white rounded-2xl p-6 shadow-sm">
+                <p className="font-semibold text-[#1a1a2e] mb-2">{question}</p>
+                <p className="text-[#1a1a2e]/60 text-sm leading-relaxed">{answer}</p>
               </div>
             ))}
           </div>
@@ -209,8 +228,8 @@ export default function Home() {
       {/* CTA */}
       <section className="bg-[#c9a84c] py-16">
         <div className="max-w-3xl mx-auto px-4 text-center">
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-[#0f0f1a] mb-4">Ready to Make Your Event Unforgettable?</h2>
-          <p className="text-[#0f0f1a]/70 text-lg mb-8">Dates fill up fast — especially for weekends and holidays. Reserve yours today.</p>
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-[#0f0f1a] mb-4">{cta.heading}</h2>
+          <p className="text-[#0f0f1a]/70 text-lg mb-8">{cta.subtext}</p>
           <Link href="/booking" className="px-10 py-4 rounded-full bg-[#0f0f1a] text-white font-bold text-base hover:bg-[#1a1a2e] transition-colors shadow-lg">
             Check Availability & Book →
           </Link>
