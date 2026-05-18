@@ -25,6 +25,8 @@ export interface Booking {
   addOns?: string[];
   backdropChoice?: string;
   notes?: string;
+  adminNotes?: string;
+  calendarEventId?: string;
 }
 
 // Map DB row (snake_case) → Booking (camelCase)
@@ -54,6 +56,8 @@ function toBooking(row: Record<string, unknown>): Booking {
     addOns: row.add_ons as string[] | undefined,
     backdropChoice: row.backdrop_choice as string | undefined,
     notes: row.notes as string | undefined,
+    adminNotes: row.admin_notes as string | undefined,
+    calendarEventId: row.calendar_event_id as string | undefined,
   };
 }
 
@@ -84,6 +88,8 @@ function toRow(b: Booking): Record<string, unknown> {
     add_ons: b.addOns ?? [],
     backdrop_choice: b.backdropChoice ?? null,
     notes: b.notes ?? null,
+    admin_notes: b.adminNotes ?? null,
+    calendar_event_id: b.calendarEventId ?? null,
   };
 }
 

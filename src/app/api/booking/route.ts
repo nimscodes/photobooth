@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { saveBooking, isDateUnavailable, generateId, Booking } from "@/lib/storage";
 import { sendBookingConfirmation, sendOwnerNotification } from "@/lib/email";
+import { createCalendarEvent } from "@/lib/googleCalendar";
 
 export async function POST(req: NextRequest) {
   let body: Record<string, unknown>;
@@ -53,8 +54,17 @@ export async function POST(req: NextRequest) {
 
   await saveBooking(booking);
 
-  Promise.all([sendBookingConfirmation(booking), sendOwnerNotification(booking)])
-    .catch(err => console.error("[EMAIL]", err));
+  // Fire calendar + email in parallel, non-blocking
+  Promise.all([
+    sendBookingConfirmation(booking),
+    sendOwnerNotification(booking),
+    createCalendarEvent(booking).then(async (eventId) => {
+      if (eventId) {
+        booking.calendarEventId = eventId;
+        await saveBooking(booking);
+      }
+    }),
+  ]).catch(err => console.error("[POST-SAVE]", err));
 
   const crmUrl = process.env.CRM_DUBSADO_WEBHOOK_URL ?? process.env.CRM_HONEYBOOK_WEBHOOK_URL;
   if (crmUrl) fetch(crmUrl, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(booking) }).catch(err => console.error("[CRM]", err));

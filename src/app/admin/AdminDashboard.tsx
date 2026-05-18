@@ -16,6 +16,10 @@ export default function AdminDashboard({ bookings: init, blockedDates: initBlock
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [msg, setMsg] = useState("");
   const [saving, setSaving] = useState(false);
+  const [search, setSearch] = useState("");
+  const [filterStatus, setFilterStatus] = useState<string>("all");
+  const [editingNotes, setEditingNotes] = useState<Record<string, string>>({});
+  const [savingNotes, setSavingNotes] = useState<Record<string, boolean>>({});
 
   const bookedDates = bookings.filter(b => b.status !== "cancelled").map(b => b.eventDate);
   const allUnavailable = [...new Set([...bookedDates, ...blocked])];
@@ -47,12 +51,38 @@ export default function AdminDashboard({ bookings: init, blockedDates: initBlock
     if (res.ok) setBookings(prev => prev.map(b => b.id === id ? { ...b, paymentStatus } : b));
   }
 
+  async function saveAdminNotes(id: string) {
+    const adminNotes = editingNotes[id] ?? "";
+    setSavingNotes(prev => ({ ...prev, [id]: true }));
+    const res = await fetch("/api/admin/bookings", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id, adminNotes }) });
+    setSavingNotes(prev => ({ ...prev, [id]: false }));
+    if (res.ok) {
+      setBookings(prev => prev.map(b => b.id === id ? { ...b, adminNotes } : b));
+      setEditingNotes(prev => { const n = { ...prev }; delete n[id]; return n; });
+    }
+  }
+
   const stats = {
     total: bookings.length,
     confirmed: bookings.filter(b => b.status === "confirmed").length,
     pending: bookings.filter(b => b.status === "pending").length,
     unpaid: bookings.filter(b => b.paymentStatus === "unpaid" && b.status !== "cancelled").length,
   };
+
+  const filteredBookings = [...bookings]
+    .sort((a, b) => new Date(a.eventDate).getTime() - new Date(b.eventDate).getTime())
+    .filter(b => filterStatus === "all" || b.status === filterStatus)
+    .filter(b => {
+      if (!search.trim()) return true;
+      const q = search.toLowerCase();
+      return (
+        b.fullName.toLowerCase().includes(q) ||
+        b.email.toLowerCase().includes(q) ||
+        b.phone.includes(q) ||
+        b.eventDate.includes(q) ||
+        (b.venueName ?? "").toLowerCase().includes(q)
+      );
+    });
 
   return (
     <div className="min-h-screen bg-[#0f0f1a] text-white">
@@ -82,23 +112,50 @@ export default function AdminDashboard({ bookings: init, blockedDates: initBlock
 
         {tab === "bookings" && (
           <div className="space-y-3">
-            {bookings.length > 0 && (
-              <div className="flex justify-end mb-1">
+            {/* Search + Filter bar */}
+            <div className="flex flex-col sm:flex-row gap-2 mb-2">
+              <input
+                type="text"
+                placeholder="Search by name, email, date, venue…"
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                className="flex-1 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm placeholder:text-white/30 outline-none focus:border-[#c9a84c]/50"
+              />
+              <select
+                value={filterStatus}
+                onChange={e => setFilterStatus(e.target.value)}
+                className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm"
+              >
+                <option value="all">All Statuses</option>
+                <option value="pending">Pending</option>
+                <option value="confirmed">Confirmed</option>
+                <option value="cancelled">Cancelled</option>
+              </select>
+              {bookings.length > 0 && (
                 <a
                   href="/api/admin/export-ics"
-                  className="text-xs text-white/40 hover:text-white/70 transition-colors"
+                  className="px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white/50 hover:text-white text-xs flex items-center gap-1 whitespace-nowrap transition-colors"
                 >
-                  📅 Export all to Google Calendar (.ics)
+                  📅 Export .ics
                 </a>
+              )}
+            </div>
+
+            {filteredBookings.length === 0 && (
+              <div className="text-center py-16 text-white/30">
+                {bookings.length === 0 ? "No bookings yet." : "No bookings match your search."}
               </div>
             )}
-            {bookings.length === 0 && <div className="text-center py-16 text-white/30">No bookings yet.</div>}
-            {[...bookings].sort((a, b) => new Date(a.eventDate).getTime() - new Date(b.eventDate).getTime()).map(b => {
+
+            {filteredBookings.map(b => {
               const pkg = PACKAGES.find(p => p.id === b.packageId);
+              const isEditingNotes = b.id in editingNotes;
+              const notesDraft = isEditingNotes ? editingNotes[b.id] : (b.adminNotes ?? "");
+
               return (
                 <div key={b.id} className="bg-white/5 border border-white/5 rounded-xl p-5">
                   <div className="flex flex-wrap items-start justify-between gap-4">
-                    <div>
+                    <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
                         <p className="font-bold">{b.fullName}</p>
                         <Badge color={{ pending: "yellow", confirmed: "green", cancelled: "red" }[b.status]}>{b.status}</Badge>
@@ -106,12 +163,54 @@ export default function AdminDashboard({ bookings: init, blockedDates: initBlock
                           {{ unpaid: "Unpaid", deposit: "Deposit", paid: "Paid" }[b.paymentStatus]}
                         </Badge>
                         <Badge color="gray">{b.intentType}</Badge>
+                        {b.calendarEventId && <Badge color="blue">📅 Synced</Badge>}
                       </div>
-                      <p className="text-white/60 text-sm mt-1">{b.eventDate} · {b.eventType === "Other" ? b.eventTypeOther : b.eventType ?? "—"} · {pkg?.name ?? "No package"}{pkg && <span className="text-[#c9a84c] ml-1">${pkg.price}</span>}</p>
+                      <p className="text-white/60 text-sm mt-1">
+                        {b.eventDate} · {b.eventType === "Other" ? b.eventTypeOther : b.eventType ?? "—"} · {pkg?.name ?? "No package"}
+                        {pkg && <span className="text-[#c9a84c] ml-1">${pkg.price}</span>}
+                      </p>
                       <p className="text-white/40 text-xs mt-0.5">{b.email} · {b.phone}</p>
                       {b.venueName && <p className="text-white/40 text-xs mt-0.5">📍 {b.venueName}, {b.venueCity}, {b.venueState}</p>}
-                      {b.notes && <p className="text-white/40 text-xs mt-1 italic">&ldquo;{b.notes}&rdquo;</p>}
+                      {b.notes && <p className="text-white/40 text-xs mt-1 italic">Client: &ldquo;{b.notes}&rdquo;</p>}
+
+                      {/* Admin notes */}
+                      <div className="mt-2">
+                        {isEditingNotes ? (
+                          <div className="flex gap-2 items-start">
+                            <textarea
+                              value={notesDraft}
+                              onChange={e => setEditingNotes(prev => ({ ...prev, [b.id]: e.target.value }))}
+                              rows={2}
+                              placeholder="Add internal notes…"
+                              className="flex-1 bg-white/10 border border-white/10 rounded-lg px-2 py-1.5 text-white text-xs resize-none outline-none focus:border-[#c9a84c]/50"
+                            />
+                            <div className="flex flex-col gap-1">
+                              <button
+                                onClick={() => saveAdminNotes(b.id)}
+                                disabled={savingNotes[b.id]}
+                                className="px-2 py-1 rounded bg-[#c9a84c] text-[#0f0f1a] text-xs font-bold disabled:opacity-50"
+                              >
+                                {savingNotes[b.id] ? "…" : "Save"}
+                              </button>
+                              <button
+                                onClick={() => setEditingNotes(prev => { const n = { ...prev }; delete n[b.id]; return n; })}
+                                className="px-2 py-1 rounded bg-white/10 text-white/50 text-xs"
+                              >
+                                Cancel
+                              </button>
+                            </div>
+                          </div>
+                        ) : (
+                          <button
+                            onClick={() => setEditingNotes(prev => ({ ...prev, [b.id]: b.adminNotes ?? "" }))}
+                            className="text-xs text-white/30 hover:text-white/60 transition-colors"
+                          >
+                            {b.adminNotes ? `📝 ${b.adminNotes}` : "+ Add internal note"}
+                          </button>
+                        )}
+                      </div>
                     </div>
+
                     <div className="flex flex-col gap-2 min-w-[160px]">
                       <select value={b.status} onChange={e => updateStatus(b.id, e.target.value as Booking["status"])} className="bg-white/10 border border-white/10 rounded-lg px-2 py-1.5 text-white text-xs">
                         <option value="pending">Pending</option>
