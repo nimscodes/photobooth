@@ -1,10 +1,5 @@
-"use client";
-
-import { NextStudio } from "next-sanity/studio";
-import config from "../../../../sanity.config";
-
-export const dynamic = "force-dynamic";
+import { redirect } from "next/navigation";
 
 export default function StudioPage() {
-  return <NextStudio config={config} />;
+  redirect("https://nt42z7dh.sanity.studio");
 }
