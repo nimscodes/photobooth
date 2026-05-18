@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { PACKAGES } from "@/lib/packages";
 import { fetchSanity } from "../../sanity/lib/client";
+import { getPackages } from "@/lib/getPackages";
 
 const FEATURES = [
   { icon: "🎥", title: "360 Video Booth", desc: "Stunning slow-motion 360° videos your guests will share instantly." },
@@ -49,7 +49,7 @@ const DEFAULT_FAQS = [
 export const revalidate = 60;
 
 export default async function Home() {
-  const [homePage, faqs] = await Promise.all([
+  const [homePage, faqs, packages] = await Promise.all([
     fetchSanity<{ hero?: typeof DEFAULT_HERO; about?: typeof DEFAULT_ABOUT; cta?: typeof DEFAULT_CTA }>(
       `*[_type == "homePage"][0]{ hero, about, cta }`,
       {}
@@ -58,6 +58,7 @@ export default async function Home() {
       `*[_type == "faqItem"] | order(order asc){ _id, question, answer }`,
       DEFAULT_FAQS
     ),
+    getPackages(),
   ]);
 
   const hero = { ...DEFAULT_HERO, ...homePage?.hero };
@@ -177,7 +178,7 @@ export default async function Home() {
             <h2 className="text-3xl sm:text-4xl font-bold text-[#1a1a2e]">Packages for Every Event</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-            {PACKAGES.slice(0, 3).map(pkg => (
+            {packages.slice(0, 3).map(pkg => (
               <div key={pkg.id} className={`rounded-2xl p-6 relative ${pkg.popular ? "bg-[#0f0f1a] text-white ring-2 ring-[#c9a84c]" : "bg-[#faf9f7] text-[#1a1a2e] shadow-sm"}`}>
                 {pkg.popular && <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#c9a84c] text-[#0f0f1a] text-xs font-bold px-4 py-1 rounded-full">Most Popular</span>}
                 <p className="font-bold text-xl mb-1">{pkg.name}</p>

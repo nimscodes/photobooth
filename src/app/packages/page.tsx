@@ -1,13 +1,17 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { PACKAGES, ADD_ONS, BUSINESS_NAME, BUSINESS_CITY } from "@/lib/packages";
+import { BUSINESS_NAME, BUSINESS_CITY } from "@/lib/packages";
+import { getPackages, getAddOns } from "@/lib/getPackages";
+
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Packages & Pricing",
-  description: `Photo booth rental packages starting at $399. Basic, Standard, Premium, and Deluxe options for every event in ${BUSINESS_CITY}.`,
+  description: `Luxury photo booth rental packages starting at $350. 360 Video Booth & Open-Air iPad Booth for every event in ${BUSINESS_CITY}.`,
 };
 
-export default function PackagesPage() {
+export default async function PackagesPage() {
+  const [PACKAGES, ADD_ONS] = await Promise.all([getPackages(), getAddOns()]);
   return (
     <>
       <section className="bg-[#0f0f1a] py-16 text-white text-center">
