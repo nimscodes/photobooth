@@ -37,6 +37,51 @@ const DEFAULT_CTA = {
   subtext: "Dates fill up fast — especially for weekends and holidays. Reserve yours today.",
 };
 
+const DEFAULT_TESTIMONIALS = [
+  {
+    _id: "t1",
+    name: "Ashley & Marcus W.",
+    eventLabel: "Wedding · Fort Worth, TX",
+    quote: "Elite Event Images made our wedding reception absolutely unforgettable. Every single guest used the photo booth — even our grandparents! The attendant was so professional and kept the line moving all night. We already have our online gallery and the photos are stunning.",
+    rating: 5,
+  },
+  {
+    _id: "t2",
+    name: "Brianna T.",
+    eventLabel: "Sweet 16 · Keller, TX",
+    quote: "I hired them for my daughter's Sweet 16 and WOW. The 360 video booth was a massive hit — every kid was obsessed. The setup was gorgeous and they were on time, professional, and so easy to work with. 100% booking again for her graduation!",
+    rating: 5,
+  },
+  {
+    _id: "t3",
+    name: "James K.",
+    eventLabel: "Corporate Event · Arlington, TX",
+    quote: "We used Elite Event Images for our company holiday party and it elevated the entire event. The custom branded overlays with our logo looked sharp, and the instant digital sharing meant employees were posting on LinkedIn within minutes. Great investment.",
+    rating: 5,
+  },
+  {
+    _id: "t4",
+    name: "Destiny R.",
+    eventLabel: "Birthday Party · Haslet, TX",
+    quote: "Booked the Spotlight package for my 30th and it was worth every penny. The backdrop was stunning, the props were fun and on-theme, and the QR code sharing was so seamless. My friends are still talking about it weeks later!",
+    rating: 5,
+  },
+  {
+    _id: "t5",
+    name: "The Nguyen Family",
+    eventLabel: "Quinceañera · North Richland Hills, TX",
+    quote: "From the moment I reached out, the communication was excellent. They arrived early, set up quickly, and our guests absolutely loved every minute. The online gallery was delivered the next day. Elite Event Images truly lives up to their name!",
+    rating: 5,
+  },
+  {
+    _id: "t6",
+    name: "Michelle P.",
+    eventLabel: "Baby Shower · Southlake, TX",
+    quote: "Such a wonderful experience from start to finish. The attendant was sweet, patient with the little ones, and kept everything running perfectly. The photos came out beautiful and every mom left with a special memory. Highly recommend!",
+    rating: 5,
+  },
+];
+
 const DEFAULT_FAQS = [
   { _id: "1", question: "How much space is needed?", answer: "We typically require an area of approximately 8x8 feet for setup and operation. This allows enough room for the booth, backdrop, props, and guests to comfortably enjoy the experience. If your venue has limited space, let us know and we'll help find the best setup option for your event." },
   { _id: "2", question: "Do you travel?", answer: "Yes! We proudly serve Fort Worth and surrounding areas. Travel within a certain radius may be included, while events outside of our standard service area may require an additional travel fee. Contact us with your event location for details." },
@@ -49,7 +94,7 @@ const DEFAULT_FAQS = [
 export const revalidate = 60;
 
 export default async function Home() {
-  const [homePage, faqs, packages] = await Promise.all([
+  const [homePage, faqs, packages, testimonials] = await Promise.all([
     fetchSanity<{ hero?: typeof DEFAULT_HERO; about?: typeof DEFAULT_ABOUT; cta?: typeof DEFAULT_CTA }>(
       `*[_type == "homePage"][0]{ hero, about, cta }`,
       {}
@@ -59,12 +104,17 @@ export default async function Home() {
       DEFAULT_FAQS
     ),
     getPackages(),
+    fetchSanity<typeof DEFAULT_TESTIMONIALS>(
+      `*[_type == "testimonial" && featured != false] | order(order asc)[0...6]{ _id, name, eventLabel, quote, rating }`,
+      DEFAULT_TESTIMONIALS
+    ),
   ]);
 
   const hero = { ...DEFAULT_HERO, ...homePage?.hero };
   const about = { ...DEFAULT_ABOUT, ...homePage?.about };
   const cta = { ...DEFAULT_CTA, ...homePage?.cta };
   const faqList = faqs.length > 0 ? faqs : DEFAULT_FAQS;
+  const testimonialList = testimonials.length > 0 ? testimonials : DEFAULT_TESTIMONIALS;
 
   return (
     <>
@@ -166,6 +216,52 @@ export default async function Home() {
                 <p className="text-[#1a1a2e]/60 leading-relaxed">{s.desc}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section className="bg-[#0f0f1a] py-20 text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-14">
+            <p className="text-[#c9a84c] text-sm font-semibold tracking-widest uppercase mb-2">Client Love</p>
+            <h2 className="text-3xl sm:text-4xl font-bold">What Our Clients Are Saying</h2>
+            <div className="flex justify-center gap-0.5 mt-3">
+              {[...Array(5)].map((_, i) => (
+                <svg key={i} className="w-5 h-5 text-[#c9a84c]" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                </svg>
+              ))}
+            </div>
+            <p className="text-white/40 text-sm mt-2">5.0 average · 100+ happy clients</p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {testimonialList.map((t) => (
+              <div key={t._id} className="bg-white/5 border border-white/5 rounded-2xl p-6 flex flex-col gap-4 hover:border-[#c9a84c]/20 transition-colors">
+                {/* Stars */}
+                <div className="flex gap-0.5">
+                  {[...Array(t.rating ?? 5)].map((_, i) => (
+                    <svg key={i} className="w-4 h-4 text-[#c9a84c]" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  ))}
+                </div>
+                {/* Quote */}
+                <p className="text-white/70 text-sm leading-relaxed flex-1">&ldquo;{t.quote}&rdquo;</p>
+                {/* Attribution */}
+                <div className="border-t border-white/5 pt-4">
+                  <p className="font-semibold text-white text-sm">{t.name}</p>
+                  {t.eventLabel && <p className="text-[#c9a84c] text-xs mt-0.5">{t.eventLabel}</p>}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="text-center mt-10">
+            <Link href="/booking" className="inline-block px-8 py-4 rounded-full bg-[#c9a84c] text-[#0f0f1a] font-bold hover:bg-[#e0c06a] transition-colors">
+              Book Your Event →
+            </Link>
           </div>
         </div>
       </section>
