@@ -9,7 +9,7 @@ interface EmailPayload {
 
 async function sendEmail(payload: EmailPayload): Promise<void> {
   const apiKey = process.env.RESEND_API_KEY;
-  const fromEmail = process.env.FROM_EMAIL ?? `noreply@flashphotobooth.com`;
+  const fromEmail = process.env.FROM_EMAIL ?? `info@eliteeventimages.com`;
 
   if (!apiKey) {
     console.log("[EMAIL] No RESEND_API_KEY — would send:", payload.subject, "→", payload.to);

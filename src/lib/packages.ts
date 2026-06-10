@@ -130,7 +130,7 @@ export const BACKDROP_OPTIONS = [
 export const BUSINESS_NAME = "Elite Event Images";
 export const BUSINESS_TAGLINE = "Luxury Photo Booth Experiences";
 export const BUSINESS_PHONE = "(817) 555-0100";
-export const BUSINESS_EMAIL = "hello@eliteeventimages.com";
+export const BUSINESS_EMAIL = "info@eliteeventimages.com";
 export const BUSINESS_CITY = "Fort Worth, TX";
 export const BUSINESS_ADDRESS = "Haslet, TX";
 
