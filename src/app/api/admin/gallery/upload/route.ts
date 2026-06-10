@@ -2,8 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { isAdminAuthenticated } from "@/lib/auth";
 import { supabaseAdmin } from "@/lib/supabase";
 
-export const config = { api: { bodyParser: false } };
-
 export async function POST(req: NextRequest) {
   if (!(await isAdminAuthenticated()))
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -18,12 +16,21 @@ export async function POST(req: NextRequest) {
 
   if (!file) return NextResponse.json({ error: "No file provided" }, { status: 400 });
 
-  const MAX_SIZE = 4 * 1024 * 1024; // 4MB
+  const ALLOWED_MIME = new Set(["image/jpeg", "image/png", "image/webp", "image/gif"]);
+  const ALLOWED_EXT = new Set(["jpg", "jpeg", "png", "webp", "gif"]);
+
+  if (!ALLOWED_MIME.has(file.type))
+    return NextResponse.json({ error: "Only JPEG, PNG, WebP, and GIF images are allowed." }, { status: 415 });
+
+  const ext = file.name.split(".").pop()?.toLowerCase() ?? "";
+  if (!ALLOWED_EXT.has(ext))
+    return NextResponse.json({ error: "Invalid file extension." }, { status: 415 });
+
+  const MAX_SIZE = 4 * 1024 * 1024;
   if (file.size > MAX_SIZE)
     return NextResponse.json({ error: "File too large. Max 4MB." }, { status: 413 });
 
-  const ext = file.name.split(".").pop()?.toLowerCase() ?? "jpg";
-  const filename = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+  const filename = `${crypto.randomUUID()}.${ext}`;
 
   const arrayBuffer = await file.arrayBuffer();
   const buffer = Buffer.from(arrayBuffer);
@@ -37,7 +44,7 @@ export async function POST(req: NextRequest) {
 
   const { data: { publicUrl } } = supabaseAdmin.storage.from("gallery").getPublicUrl(filename);
 
-  const id = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+  const id = crypto.randomUUID();
   const { error: dbError } = await supabaseAdmin.from("gallery_photos").insert({
     id,
     url: publicUrl,

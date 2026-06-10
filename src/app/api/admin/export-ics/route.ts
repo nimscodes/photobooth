@@ -13,12 +13,18 @@ function toICSDate(dateStr: string, timeStr?: string): string {
 }
 
 function escapeICS(str: string): string {
-  return str.replace(/\\/g, "\\\\").replace(/;/g, "\\;").replace(/,/g, "\\,").replace(/\n/g, "\\n");
+  return str
+    .replace(/\\/g, "\\\\")
+    .replace(/;/g, "\\;")
+    .replace(/,/g, "\\,")
+    .replace(/\r\n/g, "\\n")
+    .replace(/\r/g, "\\n")
+    .replace(/\n/g, "\\n");
 }
 
 function buildEvent(b: Booking | undefined): string {
   if (!b) return "";
-  const uid = `${b.id}@flashphotobooth`;
+  const uid = `${b.id}@eliteeventimages.com`;
   const dtStart = toICSDate(b.eventDate, b.eventStartTime);
   const dtEnd = toICSDate(b.eventDate, b.eventEndTime ?? b.eventStartTime);
   const summary = escapeICS(`${BUSINESS_NAME} — ${b.fullName} (${b.eventType ?? "Event"})`);

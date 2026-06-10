@@ -70,7 +70,6 @@ export async function createCalendarEvent(booking: Booking): Promise<string | nu
       requestBody: event,
     });
 
-    console.log("[Calendar] Event created:", res.data.id);
     return res.data.id ?? null;
   } catch (err) {
     console.error("[Calendar] Failed to create event:", err);
@@ -93,7 +92,6 @@ export async function updateCalendarEvent(eventId: string, booking: Booking): Pr
         colorId: booking.status === "confirmed" ? "2" : booking.status === "cancelled" ? "11" : "5",
       },
     });
-    console.log("[Calendar] Event updated:", eventId);
   } catch (err) {
     console.error("[Calendar] Failed to update event:", err);
   }
@@ -105,7 +103,6 @@ export async function deleteCalendarEvent(eventId: string): Promise<void> {
   try {
     const calendar = getCalendar();
     await calendar.events.delete({ calendarId: CALENDAR_ID!, eventId });
-    console.log("[Calendar] Event deleted:", eventId);
   } catch (err) {
     console.error("[Calendar] Failed to delete event:", err);
   }

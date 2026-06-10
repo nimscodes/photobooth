@@ -13,8 +13,24 @@ export async function POST(req: NextRequest) {
   if (!fullName?.trim() || !email?.trim() || !phone?.trim() || !eventDate || !intentType)
     return NextResponse.json({ error: "Missing required fields." }, { status: 400 });
 
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
+  if (fullName.trim().length > 200)
+    return NextResponse.json({ error: "Name is too long." }, { status: 400 });
+
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 254)
     return NextResponse.json({ error: "Invalid email address." }, { status: 400 });
+
+  if (!/^[\d\s\-\+\(\)]{7,20}$/.test(phone.trim()))
+    return NextResponse.json({ error: "Invalid phone number." }, { status: 400 });
+
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(eventDate))
+    return NextResponse.json({ error: "Invalid date format." }, { status: 400 });
+
+  if (!["book", "questions", "checking"].includes(intentType))
+    return NextResponse.json({ error: "Invalid intent type." }, { status: 400 });
+
+  const rawGuestCount = body.guestCount ? Number(body.guestCount) : undefined;
+  if (rawGuestCount !== undefined && (!Number.isInteger(rawGuestCount) || rawGuestCount < 1 || rawGuestCount > 9999))
+    return NextResponse.json({ error: "Invalid guest count." }, { status: 400 });
 
   if (await isDateUnavailable(eventDate))
     return NextResponse.json({ error: "That date is no longer available. Please choose another." }, { status: 409 });
@@ -40,7 +56,7 @@ export async function POST(req: NextRequest) {
     eventEndTime: typeof body.eventEndTime === "string" ? body.eventEndTime : undefined,
     eventType: typeof body.eventType === "string" ? body.eventType : undefined,
     eventTypeOther: typeof body.eventTypeOther === "string" ? body.eventTypeOther : undefined,
-    guestCount: body.guestCount ? Number(body.guestCount) : undefined,
+    guestCount: rawGuestCount,
     venueName: typeof body.venueName === "string" ? body.venueName : undefined,
     venueStreet: typeof body.venueStreet === "string" ? body.venueStreet : undefined,
     venueCity: typeof body.venueCity === "string" ? body.venueCity : undefined,
