@@ -7,7 +7,7 @@ import { PACKAGES } from "@/lib/packages";
 import Calendar from "@/components/Calendar";
 import GalleryManager from "./GalleryManager";
 
-type Tab = "bookings" | "calendar" | "gallery" | "settings";
+type Tab = "bookings" | "calendar" | "gallery";
 
 export default function AdminDashboard({ bookings: init, blockedDates: initBlocked }: { bookings: Booking[]; blockedDates: string[] }) {
   const [tab, setTab] = useState<Tab>("bookings");
@@ -105,7 +105,7 @@ export default function AdminDashboard({ bookings: init, blockedDates: initBlock
         </div>
 
         <div className="flex gap-1 mb-6 bg-white/5 rounded-xl p-1 w-fit">
-          {(["bookings", "calendar", "gallery", "settings"] as Tab[]).map(t => (
+          {(["bookings", "calendar", "gallery"] as Tab[]).map(t => (
             <button key={t} onClick={() => setTab(t)} className={`px-5 py-2 rounded-lg text-sm font-medium capitalize transition-colors ${tab === t ? "bg-[#8B5CF6] text-[#0B1020]" : "text-white/50 hover:text-white"}`}>{t}</button>
           ))}
         </div>
@@ -269,37 +269,6 @@ export default function AdminDashboard({ bookings: init, blockedDates: initBlock
 
         {tab === "gallery" && <GalleryManager />}
 
-        {tab === "settings" && (
-          <div className="max-w-xl space-y-6">
-            <div className="bg-white/5 rounded-xl p-6 border border-white/5">
-              <h3 className="font-bold mb-1">Environment Variables</h3>
-              <p className="text-white/50 text-sm mb-4">Configure in <code className="bg-white/10 px-1.5 py-0.5 rounded">.env.local</code>:</p>
-              <div className="space-y-3 text-sm font-mono">
-                {[
-                  ["ADMIN_PASSWORD", "Your admin login password"],
-                  ["OWNER_EMAIL", "Email for booking notifications"],
-                  ["RESEND_API_KEY", "resend.com API key for emails"],
-                  ["FROM_EMAIL", "Verified sender email address"],
-                  ["TWILIO_ACCOUNT_SID", "Twilio account SID for SMS"],
-                  ["TWILIO_AUTH_TOKEN", "Twilio auth token"],
-                  ["TWILIO_PHONE_NUMBER", "Your Twilio phone number"],
-                  ["NEXT_PUBLIC_BASE_URL", "Your site URL (e.g. https://yoursite.com)"],
-                  ["CRM_DUBSADO_WEBHOOK_URL", "Dubsado webhook for auto invoices"],
-                  ["CRM_HONEYBOOK_WEBHOOK_URL", "HoneyBook webhook for auto invoices"],
-                ].map(([k, d]) => (
-                  <div key={k} className="bg-white/5 rounded-lg p-3">
-                    <p className="text-[#8B5CF6]">{k}</p>
-                    <p className="text-white/40 text-xs mt-0.5 font-sans">{d}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="bg-white/5 rounded-xl p-6 border border-white/5">
-              <h3 className="font-bold mb-2">Customize Business Info & Pricing</h3>
-              <p className="text-white/50 text-sm">Edit <code className="bg-white/10 px-1.5 py-0.5 rounded text-xs">src/lib/packages.ts</code> to update your business name, phone, prices, and packages.</p>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
