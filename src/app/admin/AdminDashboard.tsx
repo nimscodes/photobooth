@@ -20,6 +20,8 @@ export default function AdminDashboard({ bookings: init, blockedDates: initBlock
   const [filterStatus, setFilterStatus] = useState<string>("all");
   const [editingNotes, setEditingNotes] = useState<Record<string, string>>({});
   const [savingNotes, setSavingNotes] = useState<Record<string, boolean>>({});
+  const [honeybookSending, setHoneybookSending] = useState<Record<string, boolean>>({});
+  const [honeybookSent, setHoneybookSent] = useState<Record<string, boolean>>({});
 
   const bookedDates = bookings.filter(b => b.status !== "cancelled").map(b => b.eventDate);
   const allUnavailable = [...new Set([...bookedDates, ...blocked])];
@@ -59,6 +61,22 @@ export default function AdminDashboard({ bookings: init, blockedDates: initBlock
     if (res.ok) {
       setBookings(prev => prev.map(b => b.id === id ? { ...b, adminNotes } : b));
       setEditingNotes(prev => { const n = { ...prev }; delete n[id]; return n; });
+    }
+  }
+
+  async function sendToHoneybook(id: string) {
+    setHoneybookSending(prev => ({ ...prev, [id]: true }));
+    const res = await fetch("/api/admin/honeybook", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id }),
+    });
+    setHoneybookSending(prev => ({ ...prev, [id]: false }));
+    if (res.ok) {
+      setHoneybookSent(prev => ({ ...prev, [id]: true }));
+    } else {
+      const d = await res.json();
+      alert(d.error ?? "Failed to send to HoneyBook.");
     }
   }
 
@@ -237,6 +255,17 @@ export default function AdminDashboard({ bookings: init, blockedDates: initBlock
                           📅 Cal
                         </a>
                       </div>
+                      <button
+                        onClick={() => sendToHoneybook(b.id)}
+                        disabled={honeybookSending[b.id] || honeybookSent[b.id]}
+                        className={`w-full py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                          honeybookSent[b.id]
+                            ? "bg-green-500/20 text-green-400 cursor-default"
+                            : "bg-amber-500/15 text-amber-400 hover:bg-amber-500/25 disabled:opacity-50"
+                        }`}
+                      >
+                        {honeybookSent[b.id] ? "✓ Sent to HoneyBook" : honeybookSending[b.id] ? "Sending…" : "🍯 Send to HoneyBook"}
+                      </button>
                     </div>
                   </div>
                 </div>
