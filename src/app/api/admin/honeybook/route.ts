@@ -7,7 +7,7 @@ export async function POST(req: NextRequest) {
   if (!(await isAdminAuthenticated()))
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const webhookUrl = process.env.HONEYBOOK_ZAPIER_WEBHOOK_URL;
+  const webhookUrl = process.env.HONEYBOOK_WEBHOOK_URL;
   if (!webhookUrl) {
     return NextResponse.json({ error: "HONEYBOOK_ZAPIER_WEBHOOK_URL is not set." }, { status: 500 });
   }
