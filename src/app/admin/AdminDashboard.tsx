@@ -85,9 +85,9 @@ export default function AdminDashboard({ bookings: init, blockedDates: initBlock
     });
 
   return (
-    <div className="min-h-screen bg-[#0f0f1a] text-white">
+    <div className="min-h-screen bg-[#0B1020] text-white">
       <div className="bg-[#0a0a14] border-b border-white/5 px-4 sm:px-6 py-3 flex items-center justify-between">
-        <p className="font-bold text-[#c9a84c]">✦ Admin Dashboard</p>
+        <p className="font-bold text-[#8B5CF6]">✦ Admin Dashboard</p>
         <div className="flex gap-4">
           <a href="/" target="_blank" className="text-white/50 hover:text-white text-sm transition-colors">View Site ↗</a>
           <button onClick={async () => { await fetch("/api/admin/logout", { method: "POST" }); window.location.href = "/admin/login"; }} className="text-white/50 hover:text-white text-sm transition-colors">Sign Out</button>
@@ -106,7 +106,7 @@ export default function AdminDashboard({ bookings: init, blockedDates: initBlock
 
         <div className="flex gap-1 mb-6 bg-white/5 rounded-xl p-1 w-fit">
           {(["bookings", "calendar", "gallery", "settings"] as Tab[]).map(t => (
-            <button key={t} onClick={() => setTab(t)} className={`px-5 py-2 rounded-lg text-sm font-medium capitalize transition-colors ${tab === t ? "bg-[#c9a84c] text-[#0f0f1a]" : "text-white/50 hover:text-white"}`}>{t}</button>
+            <button key={t} onClick={() => setTab(t)} className={`px-5 py-2 rounded-lg text-sm font-medium capitalize transition-colors ${tab === t ? "bg-[#8B5CF6] text-[#0B1020]" : "text-white/50 hover:text-white"}`}>{t}</button>
           ))}
         </div>
 
@@ -119,7 +119,7 @@ export default function AdminDashboard({ bookings: init, blockedDates: initBlock
                 placeholder="Search by name, email, date, venue…"
                 value={search}
                 onChange={e => setSearch(e.target.value)}
-                className="flex-1 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm placeholder:text-white/30 outline-none focus:border-[#c9a84c]/50"
+                className="flex-1 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm placeholder:text-white/30 outline-none focus:border-[#8B5CF6]/50"
               />
               <select
                 value={filterStatus}
@@ -167,7 +167,7 @@ export default function AdminDashboard({ bookings: init, blockedDates: initBlock
                       </div>
                       <p className="text-white/60 text-sm mt-1">
                         {b.eventDate} · {b.eventType === "Other" ? b.eventTypeOther : b.eventType ?? "—"} · {pkg?.name ?? "No package"}
-                        {pkg && <span className="text-[#c9a84c] ml-1">${pkg.price}</span>}
+                        {pkg && <span className="text-[#8B5CF6] ml-1">${pkg.price}</span>}
                       </p>
                       <p className="text-white/40 text-xs mt-0.5">{b.email} · {b.phone}</p>
                       {b.venueName && <p className="text-white/40 text-xs mt-0.5">📍 {b.venueName}, {b.venueCity}, {b.venueState}</p>}
@@ -182,13 +182,13 @@ export default function AdminDashboard({ bookings: init, blockedDates: initBlock
                               onChange={e => setEditingNotes(prev => ({ ...prev, [b.id]: e.target.value }))}
                               rows={2}
                               placeholder="Add internal notes…"
-                              className="flex-1 bg-white/10 border border-white/10 rounded-lg px-2 py-1.5 text-white text-xs resize-none outline-none focus:border-[#c9a84c]/50"
+                              className="flex-1 bg-white/10 border border-white/10 rounded-lg px-2 py-1.5 text-white text-xs resize-none outline-none focus:border-[#8B5CF6]/50"
                             />
                             <div className="flex flex-col gap-1">
                               <button
                                 onClick={() => saveAdminNotes(b.id)}
                                 disabled={savingNotes[b.id]}
-                                className="px-2 py-1 rounded bg-[#c9a84c] text-[#0f0f1a] text-xs font-bold disabled:opacity-50"
+                                className="px-2 py-1 rounded bg-[#8B5CF6] text-[#0B1020] text-xs font-bold disabled:opacity-50"
                               >
                                 {savingNotes[b.id] ? "…" : "Save"}
                               </button>
@@ -226,7 +226,7 @@ export default function AdminDashboard({ bookings: init, blockedDates: initBlock
                         <a
                           href={`/admin/invoice/${b.id}`}
                           target="_blank"
-                          className="flex-1 text-center px-2 py-1.5 rounded-lg bg-[#c9a84c]/20 text-[#c9a84c] text-xs font-medium hover:bg-[#c9a84c]/30 transition-colors"
+                          className="flex-1 text-center px-2 py-1.5 rounded-lg bg-[#8B5CF6]/20 text-[#8B5CF6] text-xs font-medium hover:bg-[#8B5CF6]/30 transition-colors"
                         >
                           📄 Invoice
                         </a>
@@ -257,7 +257,7 @@ export default function AdminDashboard({ bookings: init, blockedDates: initBlock
                   {format(selectedDate, "MMMM d, yyyy")} — {blocked.includes(format(selectedDate, "yyyy-MM-dd")) ? "Blocked" : bookedDates.includes(format(selectedDate, "yyyy-MM-dd")) ? "Has a booking" : "Available"}
                 </p>
                 {!bookedDates.includes(format(selectedDate, "yyyy-MM-dd")) && (
-                  <button onClick={toggleBlock} disabled={saving} className="px-4 py-1.5 rounded-full bg-[#c9a84c] text-[#0f0f1a] text-xs font-bold hover:bg-[#e0c06a] transition-colors disabled:opacity-50">
+                  <button onClick={toggleBlock} disabled={saving} className="px-4 py-1.5 rounded-full bg-[#8B5CF6] text-[#0B1020] text-xs font-bold hover:bg-[#7c3aed] transition-colors disabled:opacity-50">
                     {saving ? "Saving…" : blocked.includes(format(selectedDate, "yyyy-MM-dd")) ? "Unblock" : "Block Date"}
                   </button>
                 )}
@@ -288,7 +288,7 @@ export default function AdminDashboard({ bookings: init, blockedDates: initBlock
                   ["CRM_HONEYBOOK_WEBHOOK_URL", "HoneyBook webhook for auto invoices"],
                 ].map(([k, d]) => (
                   <div key={k} className="bg-white/5 rounded-lg p-3">
-                    <p className="text-[#c9a84c]">{k}</p>
+                    <p className="text-[#8B5CF6]">{k}</p>
                     <p className="text-white/40 text-xs mt-0.5 font-sans">{d}</p>
                   </div>
                 ))}

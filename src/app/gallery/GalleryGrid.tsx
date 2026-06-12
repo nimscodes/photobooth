@@ -37,8 +37,8 @@ export default function GalleryGrid() {
               onClick={() => setActive(cat)}
               className={`px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
                 cat === active
-                  ? "bg-[#0f0f1a] text-white"
-                  : "bg-white text-[#1a1a2e]/60 hover:bg-[#0f0f1a]/5"
+                  ? "bg-[#0B1020] text-white"
+                  : "bg-white text-[#1a1a2e]/60 hover:bg-[#0B1020]/5"
               }`}
             >
               {cat}
@@ -54,7 +54,7 @@ export default function GalleryGrid() {
           {loading && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {[...Array(6)].map((_, i) => (
-                <div key={i} className="rounded-2xl aspect-[4/3] bg-[#0f0f1a]/5 animate-pulse" />
+                <div key={i} className="rounded-2xl aspect-[4/3] bg-[#0B1020]/5 animate-pulse" />
               ))}
             </div>
           )}
@@ -64,7 +64,7 @@ export default function GalleryGrid() {
               {filtered.map((photo) => (
                 <div
                   key={photo.id}
-                  className="group relative rounded-2xl overflow-hidden aspect-[4/3] cursor-pointer bg-[#0f0f1a]/5"
+                  className="group relative rounded-2xl overflow-hidden aspect-[4/3] cursor-pointer bg-[#0B1020]/5"
                 >
                   <Image
                     src={photo.url}
@@ -73,8 +73,8 @@ export default function GalleryGrid() {
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   />
-                  <div className="absolute inset-0 bg-[#0f0f1a]/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2">
-                    <span className="bg-[#c9a84c] text-[#0f0f1a] text-xs font-bold px-3 py-1 rounded-full">
+                  <div className="absolute inset-0 bg-[#0B1020]/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2">
+                    <span className="bg-[#8B5CF6] text-[#0B1020] text-xs font-bold px-3 py-1 rounded-full">
                       {photo.category}
                     </span>
                     {photo.caption && (

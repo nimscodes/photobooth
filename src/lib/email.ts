@@ -73,7 +73,7 @@ export async function sendBookingConfirmation(booking: Booking): Promise<void> {
 
   const html = `
     <div style="font-family:sans-serif;max-width:600px;margin:auto;color:#1a1a2e">
-      <h2 style="color:#c9a84c">${esc(BUSINESS_NAME)} — Inquiry Received</h2>
+      <h2 style="color:#8B5CF6">${esc(BUSINESS_NAME)} — Inquiry Received</h2>
       <p>Hi ${esc(booking.fullName)},</p>
       <p>Thanks for reaching out! We received your inquiry for <strong>${esc(booking.eventDate)}</strong>.</p>
       ${booking.intentType === "book" ? `
@@ -88,7 +88,7 @@ export async function sendBookingConfirmation(booking: Booking): Promise<void> {
         <p>We'll be in touch within 24 hours to confirm and send your <b>draft invoice</b> for review.</p>
       ` : booking.intentType === "questions" ? `
         <p>Your question:</p>
-        <blockquote style="border-left:3px solid #c9a84c;padding-left:12px;color:#555">${esc(booking.question)}</blockquote>
+        <blockquote style="border-left:3px solid #8B5CF6;padding-left:12px;color:#555">${esc(booking.question)}</blockquote>
         <p>We'll reply within 1–2 business days.</p>
       ` : `
         <p>Great news — <b>${esc(booking.eventDate)}</b> is available! Book anytime at our website.</p>
@@ -110,7 +110,7 @@ export async function sendOwnerNotification(booking: Booking): Promise<void> {
 
   const html = `
     <div style="font-family:sans-serif;max-width:600px;margin:auto;color:#1a1a2e">
-      <h2 style="color:#c9a84c">New Booking Inquiry</h2>
+      <h2 style="color:#8B5CF6">New Booking Inquiry</h2>
       <table style="width:100%;border-collapse:collapse">
         <tr><td style="padding:3px 0"><b>Name:</b></td><td>${esc(booking.fullName)}</td></tr>
         <tr><td style="padding:3px 0"><b>Email:</b></td><td>${esc(booking.email)}</td></tr>
@@ -140,14 +140,14 @@ export async function sendContactResponse(name: string, email: string, message: 
   await sendEmail({
     to: email,
     subject: `${BUSINESS_NAME} — Got your message!`,
-    html: `<div style="font-family:sans-serif;color:#1a1a2e"><h2 style="color:#c9a84c">${esc(BUSINESS_NAME)}</h2><p>Hi ${esc(name)}, thanks for reaching out! We'll reply within 1–2 business days.</p><p style="font-size:12px;color:#999">${esc(BUSINESS_PHONE)}</p></div>`,
+    html: `<div style="font-family:sans-serif;color:#1a1a2e"><h2 style="color:#8B5CF6">${esc(BUSINESS_NAME)}</h2><p>Hi ${esc(name)}, thanks for reaching out! We'll reply within 1–2 business days.</p><p style="font-size:12px;color:#999">${esc(BUSINESS_PHONE)}</p></div>`,
   });
 
   if (ownerEmail) {
     await sendEmail({
       to: ownerEmail,
       subject: `Contact Form: ${name}`,
-      html: `<div style="font-family:sans-serif;color:#1a1a2e"><h2 style="color:#c9a84c">Contact Form</h2><p><b>Name:</b> ${esc(name)}</p><p><b>Email:</b> ${esc(email)}</p><p><b>Message:</b><br/>${esc(message)}</p></div>`,
+      html: `<div style="font-family:sans-serif;color:#1a1a2e"><h2 style="color:#8B5CF6">Contact Form</h2><p><b>Name:</b> ${esc(name)}</p><p><b>Email:</b> ${esc(email)}</p><p><b>Message:</b><br/>${esc(message)}</p></div>`,
     });
   }
 }

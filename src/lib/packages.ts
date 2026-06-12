@@ -12,8 +12,11 @@ export interface AddOn {
   id: string;
   name: string;
   price: number;
+  description?: string;
   hasUpload?: boolean;
   hasOptions?: boolean;
+  imageUrl?: string;
+  featured?: boolean;
 }
 
 export const PACKAGES: Package[] = [

@@ -130,7 +130,7 @@ export default function GalleryManager() {
           onClick={() => !uploading && fileInputRef.current?.click()}
           className={`border-2 border-dashed rounded-xl p-10 text-center cursor-pointer transition-colors ${
             dragging
-              ? "border-[#c9a84c] bg-[#c9a84c]/5"
+              ? "border-[#8B5CF6] bg-[#8B5CF6]/5"
               : "border-white/10 hover:border-white/30"
           } ${uploading ? "opacity-50 cursor-not-allowed" : ""}`}
         >
@@ -190,7 +190,7 @@ export default function GalleryManager() {
                 sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
               />
               {/* Overlay */}
-              <div className="absolute inset-0 bg-[#0f0f1a]/70 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-between p-3">
+              <div className="absolute inset-0 bg-[#0B1020]/70 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-between p-3">
                 <button
                   onClick={() => deletePhoto(photo)}
                   className="self-end bg-red-500/80 hover:bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-lg transition-colors"
@@ -198,7 +198,7 @@ export default function GalleryManager() {
                   🗑 Delete
                 </button>
                 <div>
-                  <span className="bg-[#c9a84c] text-[#0f0f1a] text-xs font-bold px-2 py-0.5 rounded-full">
+                  <span className="bg-[#8B5CF6] text-[#0B1020] text-xs font-bold px-2 py-0.5 rounded-full">
                     {photo.category}
                   </span>
                   {photo.caption && (

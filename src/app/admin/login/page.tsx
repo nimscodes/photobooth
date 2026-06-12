@@ -24,10 +24,10 @@ export default function AdminLoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0f0f1a] flex items-center justify-center px-4">
+    <div className="min-h-screen bg-[#0B1020] flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
-          <p className="text-[#c9a84c] font-bold text-xl">✦ {BUSINESS_NAME}</p>
+          <p className="text-[#8B5CF6] font-bold text-xl">✦ {BUSINESS_NAME}</p>
           <p className="text-white/50 text-sm mt-1">Admin Dashboard</p>
         </div>
         <form onSubmit={handleSubmit} className="bg-white/5 border border-white/10 rounded-2xl p-8 space-y-4">
@@ -35,9 +35,9 @@ export default function AdminLoginPage() {
           {error && <div className="bg-red-500/10 border border-red-500/30 text-red-300 rounded-xl px-4 py-3 text-sm text-center">{error}</div>}
           <div>
             <label className="block text-sm font-medium text-white/70 mb-1.5">Password</label>
-            <input type="password" required value={password} onChange={e => setPassword(e.target.value)} placeholder="Enter admin password" className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/30 text-sm focus:outline-none focus:border-[#c9a84c]/50 transition-colors" />
+            <input type="password" required value={password} onChange={e => setPassword(e.target.value)} placeholder="Enter admin password" className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/30 text-sm focus:outline-none focus:border-[#8B5CF6]/50 transition-colors" />
           </div>
-          <button type="submit" disabled={loading} className="w-full py-3 rounded-full bg-[#c9a84c] text-[#0f0f1a] font-bold text-sm hover:bg-[#e0c06a] transition-colors disabled:opacity-50">
+          <button type="submit" disabled={loading} className="w-full py-3 rounded-full bg-[#8B5CF6] text-[#0B1020] font-bold text-sm hover:bg-[#7c3aed] transition-colors disabled:opacity-50">
             {loading ? "Signing in…" : "Sign In"}
           </button>
         </form>

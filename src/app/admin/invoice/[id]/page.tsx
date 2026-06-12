@@ -41,13 +41,13 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between gap-6 mb-10">
           <div>
-            <p className="text-2xl font-extrabold text-[#0f0f1a]">✦ {BUSINESS_NAME}</p>
+            <p className="text-2xl font-extrabold text-[#0B1020]">✦ {BUSINESS_NAME}</p>
             <p className="text-gray-500 text-sm mt-1">{BUSINESS_CITY}</p>
             <p className="text-gray-500 text-sm">{BUSINESS_PHONE}</p>
             <p className="text-gray-500 text-sm">{BUSINESS_EMAIL}</p>
           </div>
           <div className="text-left sm:text-right">
-            <p className="text-3xl font-black text-[#c9a84c]">INVOICE</p>
+            <p className="text-3xl font-black text-[#8B5CF6]">INVOICE</p>
             <p className="text-gray-500 text-sm mt-1">#{invoiceNum}</p>
             <p className="text-gray-500 text-sm">Date: {today}</p>
             <span className={`inline-block mt-2 px-3 py-1 rounded-full text-xs font-bold ${
@@ -63,7 +63,7 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
         {/* Bill To */}
         <div className="mb-8 p-4 bg-gray-50 rounded-xl">
           <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Bill To</p>
-          <p className="font-bold text-[#0f0f1a]">{booking.fullName}</p>
+          <p className="font-bold text-[#0B1020]">{booking.fullName}</p>
           <p className="text-gray-500 text-sm">{booking.email}</p>
           <p className="text-gray-500 text-sm">{booking.phone}</p>
         </div>
@@ -80,7 +80,7 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
           ].map(([label, val]) => (
             <div key={label as string}>
               <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-0.5">{label}</p>
-              <p className="text-[#0f0f1a] text-sm font-medium">{val ?? "—"}</p>
+              <p className="text-[#0B1020] text-sm font-medium">{val ?? "—"}</p>
             </div>
           ))}
         </div>
@@ -97,19 +97,19 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
             {pkg && (
               <tr className="border-b border-gray-50">
                 <td className="py-3">
-                  <p className="font-semibold text-[#0f0f1a]">{pkg.name} Package</p>
+                  <p className="font-semibold text-[#0B1020]">{pkg.name} Package</p>
                   <p className="text-gray-400 text-xs">{pkg.hours} hours · {pkg.description}</p>
                 </td>
-                <td className="py-3 text-right font-semibold text-[#0f0f1a]">${pkg.price.toLocaleString()}</td>
+                <td className="py-3 text-right font-semibold text-[#0B1020]">${pkg.price.toLocaleString()}</td>
               </tr>
             )}
             {addOnsSelected.map((a) => (
               <tr key={a.id} className="border-b border-gray-50">
                 <td className="py-3">
-                  <p className="font-medium text-[#0f0f1a]">{a.name}</p>
+                  <p className="font-medium text-[#0B1020]">{a.name}</p>
                   <p className="text-gray-400 text-xs">Add-on</p>
                 </td>
-                <td className={`py-3 text-right font-medium ${a.price < 0 ? "text-green-600" : "text-[#0f0f1a]"}`}>
+                <td className={`py-3 text-right font-medium ${a.price < 0 ? "text-green-600" : "text-[#0B1020]"}`}>
                   {a.price < 0 ? `-$${Math.abs(a.price)}` : `$${a.price}`}
                 </td>
               </tr>
@@ -128,8 +128,8 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
             <span>${deposit.toLocaleString()}</span>
           </div>
           <div className="flex justify-between w-48 pt-2 border-t-2 border-gray-100">
-            <span className="font-bold text-[#0f0f1a]">Balance Due</span>
-            <span className="font-bold text-[#c9a84c] text-lg">${balance.toLocaleString()}</span>
+            <span className="font-bold text-[#0B1020]">Balance Due</span>
+            <span className="font-bold text-[#8B5CF6] text-lg">${balance.toLocaleString()}</span>
           </div>
         </div>
 

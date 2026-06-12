@@ -16,9 +16,9 @@ export default async function BookingPage({
 
   return (
     <>
-      <section className="bg-[#0f0f1a] py-14 text-white text-center">
+      <section className="bg-[#0B1020] py-14 text-white text-center">
         <div className="max-w-2xl mx-auto px-4">
-          <p className="text-[#c9a84c] text-sm font-semibold tracking-widest uppercase mb-3">
+          <p className="text-[#8B5CF6] text-sm font-semibold tracking-widest uppercase mb-3">
             Real-Time Availability
           </p>
           <h1 className="text-4xl sm:text-5xl font-extrabold mb-3">Book Your Event</h1>
@@ -29,13 +29,13 @@ export default async function BookingPage({
         </div>
       </section>
 
-      <section className="bg-[#0f0f1a] min-h-screen">
+      <section className="bg-[#0B1020] min-h-screen">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 pb-20 pt-4">
           <div className="bg-white/5 border border-white/10 rounded-2xl p-6 sm:p-8">
             <Suspense
               fallback={
                 <div className="flex items-center justify-center py-20">
-                  <div className="w-8 h-8 border-2 border-[#c9a84c]/30 border-t-[#c9a84c] rounded-full animate-spin" />
+                  <div className="w-8 h-8 border-2 border-[#8B5CF6]/30 border-t-[#8B5CF6] rounded-full animate-spin" />
                 </div>
               }
             >

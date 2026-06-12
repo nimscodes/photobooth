@@ -23,14 +23,14 @@ const INIT: FormData = {
   packageId: "", addOns: [], backdropChoice: "", notes: "",
 };
 
-const input = "w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/30 text-sm focus:outline-none focus:border-[#c9a84c]/50 transition-colors";
-const btn = "px-8 py-3 rounded-full bg-[#c9a84c] text-[#0f0f1a] font-semibold text-sm hover:bg-[#e0c06a] transition-colors disabled:opacity-50 disabled:cursor-not-allowed";
+const input = "w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/30 text-sm focus:outline-none focus:border-[#8B5CF6]/50 transition-colors";
+const btn = "px-8 py-3 rounded-full bg-[#8B5CF6] text-[#0B1020] font-semibold text-sm hover:bg-[#7c3aed] transition-colors disabled:opacity-50 disabled:cursor-not-allowed";
 
 function Field({ label, required, children }: { label: string; required?: boolean; children: React.ReactNode }) {
   return (
     <div className="flex flex-col gap-1.5">
       <label className="text-sm font-medium text-white/80">
-        {label}{required && <span className="text-[#c9a84c] ml-0.5">*</span>}
+        {label}{required && <span className="text-[#8B5CF6] ml-0.5">*</span>}
       </label>
       {children}
     </div>
@@ -112,7 +112,7 @@ export default function BookingForm({ defaultPackage }: { defaultPackage?: strin
             <p className="text-white/50 text-xs mb-2">Summary</p>
             <p className="text-white font-semibold">{pkg.name} Package</p>
             <p className="text-white/60 text-sm">{form.eventDate ? format(form.eventDate, "MMMM d, yyyy") : ""}</p>
-            <p className="text-[#c9a84c] font-bold text-2xl mt-3">${calcTotal().toLocaleString()}</p>
+            <p className="text-[#8B5CF6] font-bold text-2xl mt-3">${calcTotal().toLocaleString()}</p>
             <p className="text-white/30 text-xs mt-1">Invoice sent as draft for your review before payment</p>
           </div>
         )}
@@ -126,7 +126,7 @@ export default function BookingForm({ defaultPackage }: { defaultPackage?: strin
         <div className="flex items-center gap-2 mb-8">
           {[1, 2].map(s => (
             <div key={s} className="flex items-center gap-2">
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-colors ${s === step ? "bg-[#c9a84c] text-[#0f0f1a]" : s < step ? "bg-[#c9a84c]/30 text-[#c9a84c]" : "bg-white/10 text-white/40"}`}>
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-colors ${s === step ? "bg-[#8B5CF6] text-[#0B1020]" : s < step ? "bg-[#8B5CF6]/30 text-[#8B5CF6]" : "bg-white/10 text-white/40"}`}>
                 {s < step ? "✓" : s}
               </div>
               <span className={`text-sm hidden sm:inline ${s === step ? "text-white" : "text-white/40"}`}>
@@ -157,7 +157,7 @@ export default function BookingForm({ defaultPackage }: { defaultPackage?: strin
           <Field label="Event Date" required>
             <div className="bg-white/5 rounded-2xl p-4 border border-white/10">
               <Calendar unavailableDates={unavailable} selectedDate={form.eventDate} onSelectDate={d => set("eventDate", d)} />
-              {form.eventDate && <p className="mt-3 text-[#c9a84c] text-sm font-medium">Selected: {format(form.eventDate, "MMMM d, yyyy")}</p>}
+              {form.eventDate && <p className="mt-3 text-[#8B5CF6] text-sm font-medium">Selected: {format(form.eventDate, "MMMM d, yyyy")}</p>}
             </div>
           </Field>
 
@@ -226,16 +226,16 @@ export default function BookingForm({ defaultPackage }: { defaultPackage?: strin
           </div>
 
           <div>
-            <p className="text-white font-medium text-sm mb-3">Select a Package <span className="text-[#c9a84c]">*</span></p>
+            <p className="text-white font-medium text-sm mb-3">Select a Package <span className="text-[#8B5CF6]">*</span></p>
             <div className="grid sm:grid-cols-2 gap-3">
               {PACKAGES.map(pkg => (
                 <button key={pkg.id} type="button" onClick={() => set("packageId", pkg.id)}
-                  className={`p-4 rounded-xl border text-left transition-all ${form.packageId === pkg.id ? "border-[#c9a84c] bg-[#c9a84c]/10" : "border-white/10 hover:border-white/30"}`}>
+                  className={`p-4 rounded-xl border text-left transition-all ${form.packageId === pkg.id ? "border-[#8B5CF6] bg-[#8B5CF6]/10" : "border-white/10 hover:border-white/30"}`}>
                   <p className="font-semibold text-white">
                     {pkg.name}
-                    {pkg.popular && <span className="ml-2 text-xs bg-[#c9a84c]/20 text-[#c9a84c] px-2 py-0.5 rounded-full">Popular</span>}
+                    {pkg.popular && <span className="ml-2 text-xs bg-[#8B5CF6]/20 text-[#8B5CF6] px-2 py-0.5 rounded-full">Popular</span>}
                   </p>
-                  <p className="text-[#c9a84c] font-bold mt-1">${pkg.price}</p>
+                  <p className="text-[#8B5CF6] font-bold mt-1">${pkg.price}</p>
                   <p className="text-white/40 text-xs">{pkg.hours} hours</p>
                 </button>
               ))}
@@ -250,9 +250,9 @@ export default function BookingForm({ defaultPackage }: { defaultPackage?: strin
                 return (
                   <div key={addon.id}>
                     <label className="flex items-center gap-3 cursor-pointer group">
-                      <input type="checkbox" checked={checked} onChange={() => toggleAddOn(addon.id)} className="w-4 h-4 accent-[#c9a84c]" />
+                      <input type="checkbox" checked={checked} onChange={() => toggleAddOn(addon.id)} className="w-4 h-4 accent-[#8B5CF6]" />
                       <span className="text-sm text-white/80 group-hover:text-white transition-colors">
-                        {addon.name} <span className={addon.price < 0 ? "text-green-400" : "text-[#c9a84c]"}>
+                        {addon.name} <span className={addon.price < 0 ? "text-green-400" : "text-[#8B5CF6]"}>
                           {addon.price < 0 ? `-$${Math.abs(addon.price)}` : `+$${addon.price}`}
                         </span>
                       </span>
@@ -263,7 +263,7 @@ export default function BookingForm({ defaultPackage }: { defaultPackage?: strin
                         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                           {BACKDROP_OPTIONS.map(opt => (
                             <button key={opt} type="button" onClick={() => set("backdropChoice", opt)}
-                              className={`text-xs px-3 py-2 rounded-lg border transition-colors ${form.backdropChoice === opt ? "border-[#c9a84c] bg-[#c9a84c]/10 text-white" : "border-white/10 text-white/50 hover:border-white/30"}`}>
+                              className={`text-xs px-3 py-2 rounded-lg border transition-colors ${form.backdropChoice === opt ? "border-[#8B5CF6] bg-[#8B5CF6]/10 text-white" : "border-white/10 text-white/50 hover:border-white/30"}`}>
                               {opt}
                             </button>
                           ))}
@@ -302,7 +302,7 @@ export default function BookingForm({ defaultPackage }: { defaultPackage?: strin
                   );})}
                 </div>
                 <div className="flex justify-between font-bold text-white mt-2 pt-2 border-t border-white/10">
-                  <span>Total</span><span className="text-[#c9a84c]">${pkg.price + addTotal}</span>
+                  <span>Total</span><span className="text-[#8B5CF6]">${pkg.price + addTotal}</span>
                 </div>
                 <p className="text-white/30 text-xs mt-2">Invoice sent as draft for review before payment</p>
               </div>

@@ -3,10 +3,10 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { BUSINESS_NAME } from "@/lib/packages";
 
 const LINKS = [
   { href: "/", label: "Home" },
+  { href: "/about", label: "About Us" },
   { href: "/packages", label: "Packages" },
   { href: "/gallery", label: "Gallery" },
   { href: "/booking", label: "Book Now" },
@@ -18,11 +18,16 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 bg-[#0f0f1a]/95 backdrop-blur border-b border-white/5">
+    <header className="sticky top-0 z-50 bg-[#0B1020]/95 backdrop-blur border-b border-white/5">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <Link href="/" className="text-[#c9a84c] text-xl font-bold tracking-tight">
-            ✦ {BUSINESS_NAME}
+          <Link href="/" className="flex flex-col leading-none gap-0.5">
+            <span className="text-white font-extrabold text-lg tracking-widest font-serif">ELITE</span>
+            <span className="text-[10px] tracking-[0.14em] font-medium">
+              <span className="text-[#8B5CF6]">EVENT</span>
+              <span className="text-white/30 mx-1">✦</span>
+              <span className="text-cyan-400">IMAGES</span>
+            </span>
           </Link>
 
           <nav className="hidden md:flex items-center gap-1">
@@ -35,8 +40,8 @@ export default function Navbar() {
                   href={link.href}
                   className={
                     isBook
-                      ? "ml-4 px-5 py-2 rounded-full bg-[#c9a84c] text-[#0f0f1a] font-semibold text-sm hover:bg-[#e0c06a] transition-colors"
-                      : `px-4 py-2 rounded-md text-sm transition-colors ${active ? "text-[#c9a84c]" : "text-white/70 hover:text-white"}`
+                      ? "ml-4 px-5 py-2 rounded-full bg-[#8B5CF6] text-white font-semibold text-sm hover:bg-[#7c3aed] transition-colors"
+                      : `px-4 py-2 rounded-md text-sm transition-colors ${active ? "text-[#8B5CF6]" : "text-white/70 hover:text-white"}`
                   }
                 >
                   {link.label}
@@ -60,7 +65,7 @@ export default function Navbar() {
       </div>
 
       {open && (
-        <div className="md:hidden bg-[#0f0f1a] border-t border-white/5 px-4 pb-4">
+        <div className="md:hidden bg-[#0B1020] border-t border-white/5 px-4 pb-4">
           {LINKS.map((link) => {
             const isBook = link.href === "/booking";
             return (
@@ -70,8 +75,8 @@ export default function Navbar() {
                 onClick={() => setOpen(false)}
                 className={
                   isBook
-                    ? "block mt-3 px-5 py-3 rounded-full bg-[#c9a84c] text-[#0f0f1a] font-semibold text-center text-sm"
-                    : `block py-3 text-sm border-b border-white/5 ${pathname === link.href ? "text-[#c9a84c]" : "text-white/70"}`
+                    ? "block mt-3 px-5 py-3 rounded-full bg-[#8B5CF6] text-white font-semibold text-center text-sm"
+                    : `block py-3 text-sm border-b border-white/5 ${pathname === link.href ? "text-[#8B5CF6]" : "text-white/70"}`
                 }
               >
                 {link.label}

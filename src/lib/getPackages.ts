@@ -18,6 +18,8 @@ interface SanityAddOn {
   price: number;
   description?: string;
   order?: number;
+  image?: { asset?: { url?: string } };
+  featured?: boolean;
 }
 
 export async function getPackages(): Promise<Package[]> {
@@ -39,7 +41,7 @@ export async function getPackages(): Promise<Package[]> {
 
 export async function getAddOns(): Promise<AddOn[]> {
   const data = await fetchSanity<SanityAddOn[]>(
-    `*[_type == "photoAddOn"] | order(order asc){ addOnId, name, price, description }`,
+    `*[_type == "photoAddOn"] | order(order asc){ addOnId, name, price, description, featured, image { asset->{ url } } }`,
     []
   );
   if (!data || data.length === 0) return ADD_ONS;
@@ -47,7 +49,10 @@ export async function getAddOns(): Promise<AddOn[]> {
     id: a.addOnId,
     name: a.name,
     price: a.price,
+    description: a.description,
     hasUpload: a.addOnId === "custom-overlay",
     hasOptions: a.addOnId === "branded-backdrop",
+    imageUrl: a.image?.asset?.url,
+    featured: a.featured ?? false,
   }));
 }
