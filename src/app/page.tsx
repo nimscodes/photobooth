@@ -2,19 +2,19 @@ import Link from "next/link";
 import { fetchSanity } from "../../sanity/lib/client";
 import TestimonialCarousel from "@/components/TestimonialCarousel";
 
-const FEATURES = [
-  { icon: "🎥", title: "360 Video Booth", desc: "Stunning slow-motion 360° videos your guests will share instantly." },
-  { icon: "📸", title: "Open-Air iPad Booth", desc: "Modern iPad booth with instant digital sharing via QR, text, or email." },
-  { icon: "✨", title: "Custom Branding", desc: "Add your logo, names, or custom message to every photo and video." },
-  { icon: "📱", title: "Instant Digital Sharing", desc: "Guests share photos instantly — no waiting, no extra app needed." },
-  { icon: "🖼️", title: "Online Gallery", desc: "Every event gets a private online gallery delivered after the event." },
-  { icon: "👤", title: "Professional Attendant", desc: "Our attendant manages everything so you can enjoy your event stress-free." },
+const DEFAULT_FEATURES = [
+  { icon: "🎥", title: "360 Video Booth", description: "Stunning slow-motion 360° videos your guests will share instantly." },
+  { icon: "📸", title: "Open-Air iPad Booth", description: "Modern iPad booth with instant digital sharing via QR, text, or email." },
+  { icon: "✨", title: "Custom Branding", description: "Add your logo, names, or custom message to every photo and video." },
+  { icon: "📱", title: "Instant Digital Sharing", description: "Guests share photos instantly — no waiting, no extra app needed." },
+  { icon: "🖼️", title: "Online Gallery", description: "Every event gets a private online gallery delivered after the event." },
+  { icon: "👤", title: "Professional Attendant", description: "Our attendant manages everything so you can enjoy your event stress-free." },
 ];
 
-const STEPS = [
-  { n: "01", title: "Pick a Package", desc: "Browse our packages and choose the one that fits your event and budget." },
-  { n: "02", title: "Book Your Date", desc: "Fill out our simple booking form and reserve your date in minutes." },
-  { n: "03", title: "We Handle the Rest", desc: "We arrive early, set up everything, and make sure your guests have a blast." },
+const DEFAULT_STEPS = [
+  { step: "01", title: "Pick a Package", description: "Browse our packages and choose the one that fits your event and budget." },
+  { step: "02", title: "Book Your Date", description: "Fill out our simple booking form and reserve your date in minutes." },
+  { step: "03", title: "We Handle the Rest", description: "We arrive early, set up everything, and make sure your guests have a blast." },
 ];
 
 const DEFAULT_HERO = {
@@ -43,8 +43,8 @@ export const revalidate = 60;
 
 export default async function Home() {
   const [homePage, testimonials] = await Promise.all([
-    fetchSanity<{ hero?: typeof DEFAULT_HERO; cta?: typeof DEFAULT_CTA }>(
-      `*[_type == "homePage"][0]{ hero, cta }`,
+    fetchSanity<{ hero?: typeof DEFAULT_HERO; cta?: typeof DEFAULT_CTA; features?: typeof DEFAULT_FEATURES; howItWorks?: typeof DEFAULT_STEPS }>(
+      `*[_type == "homePage"][0]{ hero, cta, features, howItWorks }`,
       {}
     ),
     fetchSanity<typeof DEFAULT_TESTIMONIALS>(
@@ -55,6 +55,8 @@ export default async function Home() {
 
   const hero = { ...DEFAULT_HERO, ...homePage?.hero };
   const cta = { ...DEFAULT_CTA, ...homePage?.cta };
+  const features = homePage?.features?.length ? homePage.features : DEFAULT_FEATURES;
+  const steps = homePage?.howItWorks?.length ? homePage.howItWorks : DEFAULT_STEPS;
   const testimonialList = testimonials.length > 0 ? testimonials : DEFAULT_TESTIMONIALS;
 
   return (
@@ -103,11 +105,11 @@ export default async function Home() {
             <h2 className="text-3xl sm:text-4xl font-bold text-white">Everything You Need for the Perfect Event</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {FEATURES.map(f => (
+            {features.map(f => (
               <div key={f.title} className="bg-white/5 rounded-2xl p-6 border border-white/5 hover:border-[#8B5CF6]/20 transition-colors">
                 <div className="text-3xl mb-4">{f.icon}</div>
                 <h3 className="font-bold text-white text-lg mb-2">{f.title}</h3>
-                <p className="text-white/55 text-sm leading-relaxed">{f.desc}</p>
+                <p className="text-white/55 text-sm leading-relaxed">{f.description}</p>
               </div>
             ))}
           </div>
@@ -122,11 +124,11 @@ export default async function Home() {
             <h2 className="text-3xl sm:text-4xl font-bold text-white">How It Works</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
-            {STEPS.map(s => (
-              <div key={s.n} className="text-center">
-                <div className="text-5xl font-black text-[#8B5CF6]/20 mb-3">{s.n}</div>
+            {steps.map(s => (
+              <div key={s.step} className="text-center">
+                <div className="text-5xl font-black text-[#8B5CF6]/20 mb-3">{s.step}</div>
                 <h3 className="font-bold text-xl text-white mb-2">{s.title}</h3>
-                <p className="text-white/55 leading-relaxed">{s.desc}</p>
+                <p className="text-white/55 leading-relaxed">{s.description}</p>
               </div>
             ))}
           </div>
