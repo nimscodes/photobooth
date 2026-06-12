@@ -134,6 +134,91 @@ export async function sendOwnerNotification(booking: Booking): Promise<void> {
   }
 }
 
+export async function sendHoneybookEmail(booking: Booking): Promise<void> {
+  const ownerEmail = process.env.OWNER_EMAIL;
+  if (!ownerEmail) throw new Error("OWNER_EMAIL is not set.");
+
+  const pkg = PACKAGES.find((p) => p.id === booking.packageId);
+  const addOnList = (booking.addOns ?? []).map((id) => ADD_ONS.find((a) => a.id === id)?.name ?? id);
+  const addOnTotal = (booking.addOns ?? []).reduce((s, id) => s + (ADD_ONS.find((a) => a.id === id)?.price ?? 0), 0);
+  const total = (pkg?.price ?? 0) + addOnTotal;
+  const venue = [booking.venueName, booking.venueStreet, booking.venueCity, booking.venueState, booking.venueZip].filter(Boolean).join(", ");
+  const eventType = booking.eventType === "Other" ? (booking.eventTypeOther ?? "Other") : (booking.eventType ?? "—");
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? "https://eliteeventimages.com";
+
+  const row = (label: string, value: string | number) =>
+    value ? `<tr><td style="padding:5px 12px 5px 0;color:#666;white-space:nowrap;font-size:14px"><b>${esc(label)}</b></td><td style="padding:5px 0;font-size:14px;color:#1a1a2e">${esc(String(value))}</td></tr>` : "";
+
+  const html = `
+    <div style="font-family:sans-serif;max-width:640px;margin:auto;color:#1a1a2e">
+      <div style="background:#8B5CF6;padding:24px 28px;border-radius:12px 12px 0 0">
+        <h2 style="margin:0;color:#fff;font-size:20px">🍯 Ready for HoneyBook</h2>
+        <p style="margin:6px 0 0;color:rgba(255,255,255,0.8);font-size:14px">${esc(booking.fullName)} · ${esc(booking.eventDate)}</p>
+      </div>
+
+      <div style="background:#f9f9fb;padding:24px 28px;border-radius:0 0 12px 12px;border:1px solid #eee;border-top:none">
+
+        <h3 style="margin:0 0 12px;font-size:15px;color:#8B5CF6;text-transform:uppercase;letter-spacing:.05em">Client</h3>
+        <table style="border-collapse:collapse;width:100%;margin-bottom:20px">
+          ${row("Name", booking.fullName)}
+          ${row("Email", booking.email)}
+          ${row("Phone", booking.phone)}
+        </table>
+
+        <h3 style="margin:0 0 12px;font-size:15px;color:#8B5CF6;text-transform:uppercase;letter-spacing:.05em">Event</h3>
+        <table style="border-collapse:collapse;width:100%;margin-bottom:20px">
+          ${row("Date", booking.eventDate)}
+          ${row("Type", eventType)}
+          ${row("Time", [booking.eventStartTime, booking.eventEndTime].filter(Boolean).join(" – "))}
+          ${row("Guests", booking.guestCount ?? "")}
+          ${row("Venue", venue)}
+        </table>
+
+        <h3 style="margin:0 0 12px;font-size:15px;color:#8B5CF6;text-transform:uppercase;letter-spacing:.05em">Package & Pricing</h3>
+        <table style="border-collapse:collapse;width:100%;margin-bottom:20px">
+          ${row("Package", pkg ? `${pkg.name} (${pkg.hours} hrs)` : booking.packageId ?? "—")}
+          ${row("Package Price", pkg ? `$${pkg.price}` : "")}
+          ${addOnList.length ? row("Add-ons", addOnList.join(", ")) : ""}
+          ${addOnList.length ? row("Add-on Total", `+$${addOnTotal}`) : ""}
+          ${row("Backdrop", booking.backdropChoice ?? "")}
+          <tr style="border-top:2px solid #8B5CF6">
+            <td style="padding:8px 12px 5px 0;font-size:15px"><b>Estimated Total</b></td>
+            <td style="padding:8px 0;font-size:15px;color:#8B5CF6"><b>$${total}</b></td>
+          </tr>
+        </table>
+
+        ${booking.notes ? `
+        <h3 style="margin:0 0 8px;font-size:15px;color:#8B5CF6;text-transform:uppercase;letter-spacing:.05em">Client Notes</h3>
+        <p style="background:#fff;border-left:3px solid #8B5CF6;padding:10px 14px;border-radius:4px;font-size:14px;color:#444;margin:0 0 20px">${esc(booking.notes)}</p>
+        ` : ""}
+
+        ${booking.adminNotes ? `
+        <h3 style="margin:0 0 8px;font-size:15px;color:#8B5CF6;text-transform:uppercase;letter-spacing:.05em">Your Notes</h3>
+        <p style="background:#fff;border-left:3px solid #ccc;padding:10px 14px;border-radius:4px;font-size:14px;color:#444;margin:0 0 20px">${esc(booking.adminNotes)}</p>
+        ` : ""}
+
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px">
+          <a href="https://app.honeybook.com" target="_blank"
+            style="background:#8B5CF6;color:#fff;text-decoration:none;padding:12px 24px;border-radius:8px;font-weight:bold;font-size:14px;display:inline-block">
+            Open HoneyBook →
+          </a>
+          <a href="${esc(baseUrl)}/admin"
+            style="background:#fff;color:#8B5CF6;text-decoration:none;padding:12px 24px;border-radius:8px;font-weight:bold;font-size:14px;display:inline-block;border:1px solid #8B5CF6">
+            View in Admin
+          </a>
+        </div>
+
+        <p style="font-size:11px;color:#aaa;margin:20px 0 0">Booking ID: ${esc(booking.id)} · Submitted ${esc(new Date(booking.createdAt).toLocaleDateString())}</p>
+      </div>
+    </div>`;
+
+  await sendEmail({
+    to: ownerEmail,
+    subject: `🍯 HoneyBook Ready: ${booking.fullName} — ${booking.eventDate}`,
+    html,
+  });
+}
+
 export async function sendContactResponse(name: string, email: string, message: string): Promise<void> {
   const ownerEmail = process.env.OWNER_EMAIL;
 
