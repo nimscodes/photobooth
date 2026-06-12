@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 
@@ -21,13 +22,8 @@ export default function Navbar() {
     <header className="sticky top-0 z-50 bg-[#0B1020]/95 backdrop-blur border-b border-white/5">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <Link href="/" className="flex flex-col leading-none gap-0.5">
-            <span className="text-white font-extrabold text-lg tracking-widest font-serif">ELITE</span>
-            <span className="text-[10px] tracking-[0.14em] font-medium">
-              <span className="text-[#8B5CF6]">EVENT</span>
-              <span className="text-white/30 mx-1">✦</span>
-              <span className="text-cyan-400">IMAGES</span>
-            </span>
+          <Link href="/">
+            <Image src="/logo.png" alt="Elite Event Images" width={120} height={48} className="h-12 w-auto object-contain" priority />
           </Link>
 
           <nav className="hidden md:flex items-center gap-1">

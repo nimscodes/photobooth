@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { BUSINESS_NAME, BUSINESS_PHONE, BUSINESS_EMAIL, SOCIAL_LINKS } from "@/lib/packages";
 
 export default function Footer() {
@@ -8,12 +9,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 sm:grid-cols-4 gap-8">
           <div className="sm:col-span-1">
             <div className="mb-3">
-              <p className="text-white font-extrabold text-base tracking-widest font-serif">ELITE</p>
-              <p className="text-[10px] tracking-[0.12em]">
-                <span className="text-[#8B5CF6]">EVENT</span>
-                <span className="text-white/30 mx-1">✦</span>
-                <span className="text-cyan-400">IMAGES</span>
-              </p>
+              <Image src="/logo.png" alt="Elite Event Images" width={100} height={40} className="h-10 w-auto object-contain" />
             </div>
             <p className="leading-relaxed mb-4">
               Luxury photo booth rentals for weddings, birthdays, corporate events, and celebrations across the DFW Metroplex and Surrounding Areas.
