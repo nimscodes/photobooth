@@ -17,7 +17,7 @@ Optional integrations read additional settings from Vercel, including email/SMS,
 
 ## Sanity Studio
 
-The Studio is available inside the deployed website at `/studio`. Its schemas and configuration live in `studio/`; the website's Sanity client lives in `sanity/`.
+The website's `/studio` route forwards to the hosted Sanity Studio. Its schemas and configuration live in `studio/`; the website's Sanity client lives in `sanity/`. The root Next.js TypeScript project excludes the standalone Studio package; build it with its own package configuration when needed.
 
 ## Build verification
 
