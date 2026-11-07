@@ -1,13 +1,18 @@
 import type { Metadata } from "next";
 import ContactForm from "./ContactForm";
-import { BUSINESS_NAME, BUSINESS_PHONE, BUSINESS_EMAIL } from "@/lib/packages";
+import { getSiteSettings } from "@/lib/getSiteSettings";
 
-export const metadata: Metadata = {
-  title: "Contact Us",
-  description: `Get in touch with ${BUSINESS_NAME}. Serving the DFW Metroplex and surrounding areas.`,
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings();
+  return {
+    title: "Contact Us",
+    description: `Get in touch with ${settings.businessName}. Serving ${settings.city} and surrounding areas.`,
+  };
+}
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const settings = await getSiteSettings();
+
   return (
     <>
       <section className="bg-[#0B1020] py-14 text-white text-center">
@@ -24,9 +29,10 @@ export default function ContactPage() {
             <h2 className="text-2xl font-bold text-white mb-6">We&apos;d Love to Hear From You</h2>
             <div className="space-y-5">
               {[
-                { label: "Phone", value: BUSINESS_PHONE, href: `tel:${BUSINESS_PHONE.replace(/\D/g, "")}` },
-                { label: "Email", value: BUSINESS_EMAIL, href: `mailto:${BUSINESS_EMAIL}` },
-                { label: "Service Area", value: "DFW Metroplex & Surrounding Areas" },
+                { label: "Phone", value: settings.phone, href: `tel:${settings.phone.replace(/\D/g, "")}` },
+                { label: "Email", value: settings.email, href: `mailto:${settings.email}` },
+                { label: "Service Area", value: `${settings.city} & Surrounding Areas` },
+                ...(settings.address ? [{ label: "Address", value: settings.address }] : []),
                 { label: "Response Time", value: "Typically within 1–4 hours" },
               ].map(item => (
                 <div key={item.label} className="flex items-start gap-4">

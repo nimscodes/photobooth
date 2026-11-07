@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { fetchSanity } from "../../../../sanity/lib/client";
-import { supabase } from "@/lib/supabase";
+import { supabaseAdmin } from "@/lib/supabase";
 
 interface SanityPhoto {
   _id: string;
@@ -26,9 +26,9 @@ export async function GET() {
   }
 
   // Fall back to Supabase if no Sanity photos yet
-  const { data } = await supabase
+  const { data } = await supabaseAdmin
     .from("gallery_photos")
-    .select("*")
+    .select("id, url, category, caption")
     .order("created_at", { ascending: false });
 
   return NextResponse.json({ photos: data ?? [] });

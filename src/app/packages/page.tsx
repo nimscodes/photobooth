@@ -1,8 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import type { Metadata } from "next";
-import { BUSINESS_NAME } from "@/lib/packages";
 import { getPackages, getAddOns } from "@/lib/getPackages";
+import { fetchSanity } from "../../../sanity/lib/client";
 
 export const revalidate = 60;
 
@@ -11,9 +11,31 @@ export const metadata: Metadata = {
   description: `Luxury photo booth rental packages. 360 Video Booth & Open-Air iPad Booth for every event across the DFW Metroplex.`,
 };
 
-export default async function PackagesPage() {
-  const [PACKAGES, ADD_ONS] = await Promise.all([getPackages(), getAddOns()]);
+const DEFAULT_FAQS = [
+  { _id: "deposit", question: "Is a deposit required?", answer: "Yes — a 50% deposit is required to hold your date. The remaining balance is due 7 days before your event." },
+  { _id: "included", question: "What's included in every package?", answer: "All packages include setup/teardown, unlimited photo sessions, digital copies, props, and a personalized online gallery." },
+  { _id: "travel", question: "Do you travel outside the area?", answer: "We serve the DFW Metroplex and surrounding areas. Travel fees may apply for events more than 30 miles away." },
+  { _id: "invoice", question: "When will I receive my invoice?", answer: "Invoices are prepared as drafts so we can review and customize them. You'll receive yours within 24 hours of booking." },
+  { _id: "extra-time", question: "Can I add extra time on the day of?", answer: "Subject to availability. We recommend booking the 'Extra 2 Hours' add-on in advance." },
+];
 
+interface FAQItem {
+  _id: string;
+  question: string;
+  answer: string;
+}
+
+export default async function PackagesPage() {
+  const [PACKAGES, ADD_ONS, faqs] = await Promise.all([
+    getPackages(),
+    getAddOns(),
+    fetchSanity<FAQItem[]>(
+      `*[_type == "faqItem" && defined(question) && defined(answer)] | order(order asc){ _id, question, answer }`,
+      []
+    ),
+  ]);
+
+  const faqList = faqs.length > 0 ? faqs : DEFAULT_FAQS;
   const imageAddOns = ADD_ONS.filter(a => a.imageUrl);
   const listAddOns = ADD_ONS.filter(a => !a.imageUrl);
 
@@ -96,7 +118,7 @@ export default async function PackagesPage() {
 
       {/* List-style add-ons */}
       {listAddOns.length > 0 && (
-        <section id="faqs" className="bg-[#111827] py-16">
+        <section className="bg-[#111827] py-16">
           <div className="max-w-4xl mx-auto px-4 sm:px-6">
             <div className="text-center mb-10">
               <h2 className="text-3xl font-bold text-white">Available Add-ons</h2>
@@ -121,20 +143,14 @@ export default async function PackagesPage() {
         </section>
       )}
 
-      <section className="bg-[#0B1020] py-16">
+      <section id="faqs" className="bg-[#0B1020] py-16">
         <div className="max-w-3xl mx-auto px-4 sm:px-6">
           <h2 className="text-2xl font-bold text-white mb-8 text-center">Good to Know</h2>
           <div className="space-y-4">
-            {[
-              ["Is a deposit required?", "Yes — a 50% deposit is required to hold your date. The remaining balance is due 7 days before your event."],
-              ["What's included in every package?", "All packages include setup/teardown, unlimited photo sessions, digital copies, props, and a personalized online gallery."],
-              ["Do you travel outside the area?", `We serve the DFW Metroplex and surrounding areas. Travel fees may apply for events more than 30 miles away.`],
-              ["When will I receive my invoice?", "Invoices are prepared as drafts so we can review and customize them. You'll receive yours within 24 hours of booking."],
-              ["Can I add extra time on the day of?", "Subject to availability. We recommend booking the 'Extra 2 Hours' add-on in advance."],
-            ].map(([q, a]) => (
-              <div key={q} className="bg-white/5 border border-white/10 rounded-xl p-5">
-                <p className="font-semibold text-white mb-1">{q}</p>
-                <p className="text-white/55 text-sm leading-relaxed">{a}</p>
+            {faqList.map(faq => (
+              <div key={faq._id} className="bg-white/5 border border-white/10 rounded-xl p-5">
+                <p className="font-semibold text-white mb-1">{faq.question}</p>
+                <p className="text-white/55 text-sm leading-relaxed">{faq.answer}</p>
               </div>
             ))}
           </div>

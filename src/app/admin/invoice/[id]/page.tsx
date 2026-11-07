@@ -1,7 +1,8 @@
 import { redirect, notFound } from "next/navigation";
 import { isAdminAuthenticated } from "@/lib/auth";
 import { getBookingById } from "@/lib/storage";
-import { PACKAGES, ADD_ONS, BUSINESS_NAME, BUSINESS_PHONE, BUSINESS_EMAIL, BUSINESS_CITY } from "@/lib/packages";
+import { PACKAGES, ADD_ONS } from "@/lib/packages";
+import { getSiteSettings } from "@/lib/getSiteSettings";
 import InvoicePrintButton from "./InvoicePrintButton";
 
 export default async function InvoicePage({ params }: { params: Promise<{ id: string }> }) {
@@ -11,6 +12,7 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
   const { id } = await params;
   const booking = await getBookingById(id);
   if (!booking) notFound();
+  const settings = await getSiteSettings();
 
   const pkg = PACKAGES.find((p) => p.id === booking.packageId);
   const addOnsSelected = (booking.addOns ?? [])
@@ -41,10 +43,10 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between gap-6 mb-10">
           <div>
-            <p className="text-2xl font-extrabold text-[#0B1020]">✦ {BUSINESS_NAME}</p>
-            <p className="text-gray-500 text-sm mt-1">{BUSINESS_CITY}</p>
-            <p className="text-gray-500 text-sm">{BUSINESS_PHONE}</p>
-            <p className="text-gray-500 text-sm">{BUSINESS_EMAIL}</p>
+            <p className="text-2xl font-extrabold text-[#0B1020]">✦ {settings.businessName}</p>
+            <p className="text-gray-500 text-sm mt-1">{settings.city}</p>
+            <p className="text-gray-500 text-sm">{settings.phone}</p>
+            <p className="text-gray-500 text-sm">{settings.email}</p>
           </div>
           <div className="text-left sm:text-right">
             <p className="text-3xl font-black text-[#8B5CF6]">INVOICE</p>
@@ -143,8 +145,8 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
 
         {/* Footer */}
         <div className="border-t border-gray-100 pt-6 text-center text-gray-400 text-xs">
-          <p>Thank you for choosing {BUSINESS_NAME}! We can&apos;t wait to be part of your event.</p>
-          <p className="mt-1">{BUSINESS_PHONE} · {BUSINESS_EMAIL}</p>
+          <p>Thank you for choosing {settings.businessName}! We can&apos;t wait to be part of your event.</p>
+          <p className="mt-1">{settings.phone} · {settings.email}</p>
         </div>
       </div>
 

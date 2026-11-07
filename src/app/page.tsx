@@ -17,6 +17,13 @@ const DEFAULT_STEPS = [
   { step: "03", title: "We Handle the Rest", description: "We arrive early, set up everything, and make sure your guests have a blast." },
 ];
 
+const DEFAULT_ABOUT = {
+  heading: "Photo Booth Experiences Made for Your Best Moments",
+  paragraph1: "Elite Event Images brings modern photo booth experiences to weddings, birthdays, corporate events, and celebrations across the DFW Metroplex.",
+  paragraph2: "From polished setups to easy digital sharing, we make it simple for guests to join in and take home a memory of your event.",
+  paragraph3: "Our team handles the details so you can enjoy the celebration.",
+};
+
 const DEFAULT_HERO = {
   headline: "Luxury Photo Booth Experiences for Unforgettable Events",
   subtext: "Modern photo booth rentals for weddings, birthdays, corporate events, and celebrations across the DFW Metroplex and Surrounding Areas.",
@@ -43,8 +50,8 @@ export const revalidate = 60;
 
 export default async function Home() {
   const [homePage, testimonials] = await Promise.all([
-    fetchSanity<{ hero?: typeof DEFAULT_HERO; cta?: typeof DEFAULT_CTA; features?: typeof DEFAULT_FEATURES; howItWorks?: typeof DEFAULT_STEPS }>(
-      `*[_type == "homePage"][0]{ hero, cta, features, howItWorks }`,
+    fetchSanity<{ hero?: typeof DEFAULT_HERO; about?: typeof DEFAULT_ABOUT; cta?: typeof DEFAULT_CTA; features?: typeof DEFAULT_FEATURES; howItWorks?: typeof DEFAULT_STEPS }>(
+      `*[_type == "homePage"][0]{ hero, about, cta, features, howItWorks }`,
       {}
     ),
     fetchSanity<typeof DEFAULT_TESTIMONIALS>(
@@ -54,6 +61,7 @@ export default async function Home() {
   ]);
 
   const hero = { ...DEFAULT_HERO, ...homePage?.hero };
+  const about = { ...DEFAULT_ABOUT, ...homePage?.about };
   const cta = { ...DEFAULT_CTA, ...homePage?.cta };
   const features = homePage?.features?.length ? homePage.features : DEFAULT_FEATURES;
   const steps = homePage?.howItWorks?.length ? homePage.howItWorks : DEFAULT_STEPS;
@@ -76,6 +84,7 @@ export default async function Home() {
             <span className="text-white/30 text-2xl">✦</span>
             <span className="text-cyan-400 text-xl sm:text-2xl font-bold tracking-[0.2em]">IMAGES</span>
           </div>
+          <h1 className="text-3xl sm:text-4xl font-bold text-white mb-4">{hero.headline}</h1>
           <p className="text-white/60 text-lg sm:text-xl max-w-2xl mx-auto mb-10">{hero.subtext}</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/booking" className="px-8 py-4 rounded-full bg-[#8B5CF6] text-white font-bold text-base hover:bg-[#7c3aed] transition-all hover:scale-105">
@@ -94,6 +103,22 @@ export default async function Home() {
               <div key={l}><p className="text-3xl font-bold text-[#8B5CF6]">{n}</p><p className="text-white/50 text-sm mt-0.5">{l}</p></div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* About */}
+      <section className="bg-[#0B1020] py-20 text-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
+          <p className="text-[#8B5CF6] text-sm font-semibold tracking-widest uppercase mb-3">About Elite Event Images</p>
+          <h2 className="text-3xl sm:text-4xl font-bold mb-6">{about.heading}</h2>
+          <div className="space-y-4 text-white/60 leading-relaxed max-w-3xl mx-auto">
+            {about.paragraph1 && <p>{about.paragraph1}</p>}
+            {about.paragraph2 && <p>{about.paragraph2}</p>}
+            {about.paragraph3 && <p>{about.paragraph3}</p>}
+          </div>
+          <Link href="/about" className="inline-block mt-8 text-[#a78bfa] font-semibold hover:text-white transition-colors">
+            More About Us →
+          </Link>
         </div>
       </section>
 

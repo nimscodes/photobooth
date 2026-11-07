@@ -1,36 +1,24 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Elite Event Images
 
-## Getting Started
+This repository contains the Next.js website and its Sanity content studio. The live website is served by Vercel; production environment variables are managed in the Vercel project settings and are not stored in this repository.
 
-First, run the development server:
+## Production deployment
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+The Vercel project is connected to this GitHub repository. Changes merged or pushed to `main` trigger a production deployment. Review the Vercel deployment result after each push.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The website requires these production variables in Vercel:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- `SUPABASE_URL`
+- `SUPABASE_SERVICE_ROLE_KEY` — server-only; do not expose it as a `NEXT_PUBLIC_` variable.
+- `NEXT_PUBLIC_SANITY_PROJECT_ID`
+- `NEXT_PUBLIC_SANITY_DATASET`
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Optional integrations read additional settings from Vercel, including email/SMS, calendar, admin authentication, and CRM webhook credentials. Keep those values in Vercel and do not commit them.
 
-## Learn More
+## Sanity Studio
 
-To learn more about Next.js, take a look at the following resources:
+The Studio is available inside the deployed website at `/studio`. Its schemas and configuration live in `studio/`; the website's Sanity client lives in `sanity/`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Build verification
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The Vercel production build runs from the repository root using the root `package.json` build script. The Studio also has a package-local build script for checking its schema and configuration.

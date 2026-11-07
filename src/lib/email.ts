@@ -1,5 +1,6 @@
 import { Booking } from "./storage";
-import { PACKAGES, ADD_ONS, BUSINESS_NAME, BUSINESS_EMAIL, BUSINESS_PHONE } from "./packages";
+import { PACKAGES, ADD_ONS } from "./packages";
+import { getSiteSettings } from "./getSiteSettings";
 
 interface EmailPayload {
   to: string;
@@ -16,7 +17,7 @@ function esc(text: unknown): string {
     .replace(/'/g, "&#039;");
 }
 
-async function sendEmail(payload: EmailPayload): Promise<void> {
+async function sendEmail(payload: EmailPayload, businessName: string): Promise<void> {
   const apiKey = process.env.RESEND_API_KEY;
   const fromEmail = process.env.FROM_EMAIL ?? "info@eliteeventimages.com";
 
@@ -26,7 +27,7 @@ async function sendEmail(payload: EmailPayload): Promise<void> {
     method: "POST",
     headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
     body: JSON.stringify({
-      from: `${BUSINESS_NAME} <${fromEmail}>`,
+      from: `${businessName} <${fromEmail}>`,
       to: [payload.to],
       subject: payload.subject,
       html: payload.html,
@@ -65,6 +66,7 @@ function addOnNames(ids?: string[]) {
 }
 
 export async function sendBookingConfirmation(booking: Booking): Promise<void> {
+  const settings = await getSiteSettings();
   const pkg = PACKAGES.find((p) => p.id === booking.packageId);
   const addOnTotal = (booking.addOns ?? []).reduce(
     (s, id) => s + (ADD_ONS.find((a) => a.id === id)?.price ?? 0), 0
@@ -73,7 +75,7 @@ export async function sendBookingConfirmation(booking: Booking): Promise<void> {
 
   const html = `
     <div style="font-family:sans-serif;max-width:600px;margin:auto;color:#1a1a2e">
-      <h2 style="color:#8B5CF6">${esc(BUSINESS_NAME)} — Inquiry Received</h2>
+      <h2 style="color:#8B5CF6">${esc(settings.businessName)} — Inquiry Received</h2>
       <p>Hi ${esc(booking.fullName)},</p>
       <p>Thanks for reaching out! We received your inquiry for <strong>${esc(booking.eventDate)}</strong>.</p>
       ${booking.intentType === "book" ? `
@@ -94,17 +96,18 @@ export async function sendBookingConfirmation(booking: Booking): Promise<void> {
         <p>Great news — <b>${esc(booking.eventDate)}</b> is available! Book anytime at our website.</p>
       `}
       <hr style="border:none;border-top:1px solid #eee;margin:24px 0"/>
-      <p style="font-size:12px;color:#999">${esc(BUSINESS_NAME)} | ${esc(BUSINESS_PHONE)} | ${esc(BUSINESS_EMAIL)}</p>
+      <p style="font-size:12px;color:#999">${esc(settings.businessName)} | ${esc(settings.phone)} | ${esc(settings.email)}</p>
     </div>`;
 
   await sendEmail({
     to: booking.email,
-    subject: `${BUSINESS_NAME} — Your Inquiry for ${booking.eventDate}`,
+    subject: `${settings.businessName} — Your Inquiry for ${booking.eventDate}`,
     html,
-  });
+  }, settings.businessName);
 }
 
 export async function sendOwnerNotification(booking: Booking): Promise<void> {
+  const settings = await getSiteSettings();
   const ownerEmail = process.env.OWNER_EMAIL;
   if (!ownerEmail) return;
 
@@ -124,17 +127,18 @@ export async function sendOwnerNotification(booking: Booking): Promise<void> {
       <p><a href="${esc(process.env.NEXT_PUBLIC_BASE_URL ?? "https://eliteeventimages.com")}/admin">Open Admin Dashboard →</a></p>
     </div>`;
 
-  await sendEmail({ to: ownerEmail, subject: `New Booking: ${booking.fullName} — ${booking.eventDate}`, html });
+  await sendEmail({ to: ownerEmail, subject: `New Booking: ${booking.fullName} — ${booking.eventDate}`, html }, settings.businessName);
 
   if (booking.phone && booking.intentType === "book") {
     await sendSMS(
       booking.phone,
-      `Hi ${booking.fullName.split(" ")[0]}! Your ${BUSINESS_NAME} booking for ${booking.eventDate} is confirmed. Invoice coming soon. Questions? ${BUSINESS_PHONE}`
+      `Hi ${booking.fullName.split(" ")[0]}! Your ${settings.businessName} booking for ${booking.eventDate} is confirmed. Invoice coming soon. Questions? ${settings.phone}`
     );
   }
 }
 
 export async function sendHoneybookEmail(booking: Booking): Promise<void> {
+  const settings = await getSiteSettings();
   const ownerEmail = process.env.OWNER_EMAIL;
   if (!ownerEmail) throw new Error("OWNER_EMAIL is not set.");
 
@@ -216,23 +220,24 @@ export async function sendHoneybookEmail(booking: Booking): Promise<void> {
     to: ownerEmail,
     subject: `🍯 HoneyBook Ready: ${booking.fullName} — ${booking.eventDate}`,
     html,
-  });
+  }, settings.businessName);
 }
 
 export async function sendContactResponse(name: string, email: string, message: string): Promise<void> {
+  const settings = await getSiteSettings();
   const ownerEmail = process.env.OWNER_EMAIL;
 
   await sendEmail({
     to: email,
-    subject: `${BUSINESS_NAME} — Got your message!`,
-    html: `<div style="font-family:sans-serif;color:#1a1a2e"><h2 style="color:#8B5CF6">${esc(BUSINESS_NAME)}</h2><p>Hi ${esc(name)}, thanks for reaching out! We'll reply within 1–2 business days.</p><p style="font-size:12px;color:#999">${esc(BUSINESS_PHONE)}</p></div>`,
-  });
+    subject: `${settings.businessName} — Got your message!`,
+    html: `<div style="font-family:sans-serif;color:#1a1a2e"><h2 style="color:#8B5CF6">${esc(settings.businessName)}</h2><p>Hi ${esc(name)}, thanks for reaching out! We'll reply within 1–2 business days.</p><p style="font-size:12px;color:#999">${esc(settings.phone)}</p></div>`,
+  }, settings.businessName);
 
   if (ownerEmail) {
     await sendEmail({
       to: ownerEmail,
       subject: `Contact Form: ${name}`,
       html: `<div style="font-family:sans-serif;color:#1a1a2e"><h2 style="color:#8B5CF6">Contact Form</h2><p><b>Name:</b> ${esc(name)}</p><p><b>Email:</b> ${esc(email)}</p><p><b>Message:</b><br/>${esc(message)}</p></div>`,
-    });
+    }, settings.businessName);
   }
 }

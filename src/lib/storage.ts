@@ -1,4 +1,4 @@
-import { supabase } from "./supabase";
+import { supabaseAdmin } from "./supabase";
 
 export interface Booking {
   id: string;
@@ -94,7 +94,7 @@ function toRow(b: Booking): Record<string, unknown> {
 }
 
 export async function getBookings(): Promise<Booking[]> {
-  const { data, error } = await supabase
+  const { data, error } = await supabaseAdmin
     .from("bookings")
     .select("*")
     .order("event_date", { ascending: true });
@@ -103,7 +103,7 @@ export async function getBookings(): Promise<Booking[]> {
 }
 
 export async function getBookingById(id: string): Promise<Booking | undefined> {
-  const { data, error } = await supabase
+  const { data, error } = await supabaseAdmin
     .from("bookings")
     .select("*")
     .eq("id", id)
@@ -113,14 +113,14 @@ export async function getBookingById(id: string): Promise<Booking | undefined> {
 }
 
 export async function saveBooking(booking: Booking): Promise<void> {
-  const { error } = await supabase
+  const { error } = await supabaseAdmin
     .from("bookings")
     .upsert(toRow(booking));
   if (error) console.error("[DB] saveBooking:", error.message);
 }
 
 export async function getBookedDates(): Promise<string[]> {
-  const { data, error } = await supabase
+  const { data, error } = await supabaseAdmin
     .from("bookings")
     .select("event_date")
     .neq("status", "cancelled");
@@ -129,7 +129,7 @@ export async function getBookedDates(): Promise<string[]> {
 }
 
 export async function getBlockedDates(): Promise<string[]> {
-  const { data, error } = await supabase
+  const { data, error } = await supabaseAdmin
     .from("blocked_dates")
     .select("date");
   if (error) { console.error("[DB] getBlockedDates:", error.message); return []; }
@@ -137,10 +137,10 @@ export async function getBlockedDates(): Promise<string[]> {
 }
 
 export async function setBlockedDates(dates: string[]): Promise<void> {
-  const { error: delError } = await supabase.from("blocked_dates").delete().neq("date", "");
+  const { error: delError } = await supabaseAdmin.from("blocked_dates").delete().neq("date", "");
   if (delError) { console.error("[DB] setBlockedDates delete:", delError.message); return; }
   if (dates.length === 0) return;
-  const { error: insError } = await supabase
+  const { error: insError } = await supabaseAdmin
     .from("blocked_dates")
     .insert(dates.map((d) => ({ date: d })));
   if (insError) console.error("[DB] setBlockedDates insert:", insError.message);

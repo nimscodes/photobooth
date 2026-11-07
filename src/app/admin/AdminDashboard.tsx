@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { format } from "date-fns";
-import { Booking } from "@/lib/storage";
+import type { Booking } from "@/lib/storage";
 import { PACKAGES } from "@/lib/packages";
 import Calendar from "@/components/Calendar";
 import GalleryManager from "./GalleryManager";

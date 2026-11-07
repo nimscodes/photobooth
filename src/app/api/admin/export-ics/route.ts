@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { isAdminAuthenticated } from "@/lib/auth";
 import { getBookingById, getBookings, Booking } from "@/lib/storage";
-import { BUSINESS_NAME } from "@/lib/packages";
+import { getSiteSettings } from "@/lib/getSiteSettings";
 
 function toICSDate(dateStr: string, timeStr?: string): string {
   const [year, month, day] = dateStr.split("-");
@@ -22,12 +22,12 @@ function escapeICS(str: string): string {
     .replace(/\n/g, "\\n");
 }
 
-function buildEvent(b: Booking | undefined): string {
+function buildEvent(b: Booking | undefined, businessName: string): string {
   if (!b) return "";
   const uid = `${b.id}@eliteeventimages.com`;
   const dtStart = toICSDate(b.eventDate, b.eventStartTime);
   const dtEnd = toICSDate(b.eventDate, b.eventEndTime ?? b.eventStartTime);
-  const summary = escapeICS(`${BUSINESS_NAME} — ${b.fullName} (${b.eventType ?? "Event"})`);
+  const summary = escapeICS(`${businessName} — ${b.fullName} (${b.eventType ?? "Event"})`);
   const desc = escapeICS(
     [
       `Client: ${b.fullName}`,
@@ -62,6 +62,7 @@ export async function GET(req: NextRequest) {
   if (!(await isAdminAuthenticated()))
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
+  const settings = await getSiteSettings();
   const { searchParams } = new URL(req.url);
   const id = searchParams.get("id");
 
@@ -69,19 +70,19 @@ export async function GET(req: NextRequest) {
   if (id) {
     const b = await getBookingById(id);
     if (!b) return NextResponse.json({ error: "Not found" }, { status: 404 });
-    events = [buildEvent(b)];
+    events = [buildEvent(b, settings.businessName)];
   } else {
     const all = await getBookings();
     events = all
       .filter((b) => b.status !== "cancelled" && b.intentType === "book")
-      .map(buildEvent)
+      .map((booking) => buildEvent(booking, settings.businessName))
       .filter(Boolean);
   }
 
   const cal = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
-    `PRODID:-//${BUSINESS_NAME}//Bookings//EN`,
+    `PRODID:-//${settings.businessName}//Bookings//EN`,
     "CALSCALE:GREGORIAN",
     "METHOD:PUBLISH",
     ...events,
