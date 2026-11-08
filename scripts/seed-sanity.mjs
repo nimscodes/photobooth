@@ -23,11 +23,11 @@ const homePage = {
     stat3Label: "Memories Made",
   },
   features: [
-    { _key: "f1", icon: "🎥", title: "360 Video Booth", description: "Stunning slow-motion 360° videos your guests will share instantly." },
-    { _key: "f2", icon: "📸", title: "Open-Air iPad Booth", description: "Modern iPad booth with instant digital sharing via QR, text, or email." },
-    { _key: "f3", icon: "✨", title: "Custom Branding", description: "Add your logo, names, or custom message to every photo and video." },
-    { _key: "f4", icon: "📱", title: "Instant Digital Sharing", description: "Guests share photos instantly — no waiting, no extra app needed." },
-    { _key: "f5", icon: "🖼️", title: "Online Gallery", description: "Every event gets a private online gallery delivered after the event." },
+    { _key: "f1", icon: "📸", title: "Digital Photo Booth", description: "A fun photo booth experience with unlimited sessions." },
+    { _key: "f2", icon: "📱", title: "Digital Sharing", description: "Guests can share their photos digitally." },
+    { _key: "f3", icon: "🖨️", title: "On-Site Printing", description: "Prints are available with select package tiers." },
+    { _key: "f4", icon: "✨", title: "Personalized Templates", description: "Choose a photo template customized for your event." },
+    { _key: "f5", icon: "🖼️", title: "Online Gallery", description: "An online gallery is included with select package tiers." },
     { _key: "f6", icon: "👤", title: "Professional Attendant", description: "Our attendant manages everything so you can enjoy your event stress-free." },
   ],
   howItWorks: [

@@ -17,8 +17,8 @@ export async function generateMetadata(): Promise<Metadata> {
       default: `${settings.businessName} — Photo Booth Rental in ${settings.city}`,
       template: `%s | ${settings.businessName}`,
     },
-    description: `${settings.tagline} in ${settings.city}. 360 Video Booth & Open-Air iPad Booth for weddings, birthdays, corporate events, and celebrations across Fort Worth and surrounding areas.`,
-    keywords: ["photo booth rental", "360 video booth", "photo booth Fort Worth", "photo booth Haslet TX", settings.city, "wedding photo booth", "birthday photo booth", "corporate event photo booth"],
+    description: `${settings.tagline} in ${settings.city}. Personalized photo booth experiences for weddings, birthdays, corporate events, and celebrations across Fort Worth and surrounding areas.`,
+    keywords: ["photo booth rental", "photo booth Fort Worth", "photo booth Haslet TX", settings.city, "wedding photo booth", "birthday photo booth", "corporate event photo booth"],
     openGraph: {
       type: "website",
       siteName: settings.businessName,

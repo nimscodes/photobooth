@@ -28,15 +28,18 @@ export async function getPackages(): Promise<Package[]> {
     []
   );
   if (!data || data.length === 0) return PACKAGES;
-  return data.map((p) => ({
-    id: p.packageId,
-    name: p.name,
-    price: p.price,
-    hours: p.hours,
-    description: p.description,
-    features: p.features ?? [],
-    popular: p.popular ?? false,
-  }));
+  const packages = data
+    .filter((p) => !/(?:360\s*(?:video)?\s*booth|(?:roaming|open[- ]air)\s+iPad\s+booth|glam(?:our)?\s+booth)/i.test(`${p.name} ${p.description} ${(p.features ?? []).join(" ")}`))
+    .map((p) => ({
+      id: p.packageId,
+      name: p.name,
+      price: p.price,
+      hours: p.hours,
+      description: p.description,
+      features: p.features ?? [],
+      popular: p.popular ?? false,
+    }));
+  return packages.length > 0 ? packages : PACKAGES;
 }
 
 export async function getAddOns(): Promise<AddOn[]> {

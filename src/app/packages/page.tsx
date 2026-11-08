@@ -2,21 +2,22 @@ import Link from "next/link";
 import Image from "next/image";
 import type { Metadata } from "next";
 import { getPackages, getAddOns } from "@/lib/getPackages";
+import { PRICING_DISCLAIMER } from "@/lib/packages";
 import { fetchSanity } from "../../../sanity/lib/client";
 
 export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Packages & Pricing",
-  description: `Luxury photo booth rental packages. 360 Video Booth & Open-Air iPad Booth for every event across the DFW Metroplex.`,
+  description: "Explore four tiered photo booth experiences for events across the DFW Metroplex.",
 };
 
 const DEFAULT_FAQS = [
-  { _id: "deposit", question: "Is a deposit required?", answer: "Yes — a 50% deposit is required to hold your date. The remaining balance is due 7 days before your event." },
-  { _id: "included", question: "What's included in every package?", answer: "All packages include setup/teardown, unlimited photo sessions, digital copies, props, and a personalized online gallery." },
-  { _id: "travel", question: "Do you travel outside the area?", answer: "We serve the DFW Metroplex and surrounding areas. Travel fees may apply for events more than 30 miles away." },
-  { _id: "invoice", question: "When will I receive my invoice?", answer: "Invoices are prepared as drafts so we can review and customize them. You'll receive yours within 24 hours of booking." },
-  { _id: "extra-time", question: "Can I add extra time on the day of?", answer: "Subject to availability. We recommend booking the 'Extra 2 Hours' add-on in advance." },
+  { _id: "deposit", question: "Is a deposit required?", answer: "Deposit requirements and the payment schedule will be confirmed with your booking terms before your booking is finalized." },
+  { _id: "included", question: "What's included in each package?", answer: "Each tier builds on the previous one, from digital sharing and a standard layout to printing, enhanced customization, and an online gallery. See each package for its details." },
+  { _id: "travel", question: "Do you travel outside the area?", answer: "We serve the DFW Metroplex and surrounding areas. Any travel fees will be confirmed based on your event location." },
+  { _id: "invoice", question: "When will I receive an estimate?", answer: "We'll follow up with a draft estimate and confirm the booking details and terms with you." },
+  { _id: "extra-time", question: "Can I add extra time on the day of?", answer: "Additional time is subject to availability. Ask us about options when you inquire." },
 ];
 
 interface FAQItem {
@@ -43,9 +44,10 @@ export default async function PackagesPage() {
     <>
       <section className="bg-[#0B1020] py-16 text-white text-center">
         <div className="max-w-3xl mx-auto px-4">
-          <p className="text-[#8B5CF6] text-sm font-semibold tracking-widest uppercase mb-3">Transparent Pricing</p>
+          <p className="text-[#8B5CF6] text-sm font-semibold tracking-widest uppercase mb-3">Photo Booth Experiences</p>
           <h1 className="text-4xl sm:text-5xl font-extrabold mb-4">Packages &amp; Pricing</h1>
-          <p className="text-white/60 text-lg">No hidden fees. All packages include unlimited prints, props, and a dedicated online gallery.</p>
+          <p className="text-white/60 text-lg">Make every moment unforgettable with Elite Event Images. From intimate celebrations to unforgettable parties, our photo booth experiences bring personalized keepsakes and fun to your event. Explore our packages and find the perfect fit for your occasion.</p>
+          <p className="mt-5 text-sm text-white/70">{PRICING_DISCLAIMER}</p>
         </div>
       </section>
 
@@ -69,7 +71,7 @@ export default async function PackagesPage() {
                   </ul>
                 </div>
                 <Link href={`/booking?package=${pkg.id}`} className={`block text-center py-3 rounded-full text-sm font-semibold transition-colors ${pkg.popular ? "bg-white text-[#8B5CF6] hover:bg-white/90" : "border border-[#8B5CF6]/50 text-[#8B5CF6] hover:bg-[#8B5CF6] hover:text-white"}`}>
-                  Book {pkg.name}
+                  Inquire about {pkg.name}
                 </Link>
               </div>
             ))}

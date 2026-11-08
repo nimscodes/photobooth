@@ -1,10 +1,12 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import BookingForm from "@/components/BookingForm";
+import { PRICING_DISCLAIMER } from "@/lib/packages";
+import { getPackages } from "@/lib/getPackages";
 
 export const metadata: Metadata = {
   title: "Book Your Photo Booth",
-  description: "Reserve your photo booth rental online. Check real-time availability and book in minutes.",
+  description: "Check real-time availability and send a photo booth booking inquiry.",
 };
 
 export default async function BookingPage({
@@ -13,6 +15,7 @@ export default async function BookingPage({
   searchParams: Promise<{ package?: string }>;
 }) {
   const params = await searchParams;
+  const packages = await getPackages();
 
   return (
     <>
@@ -23,9 +26,10 @@ export default async function BookingPage({
           </p>
           <h1 className="text-4xl sm:text-5xl font-extrabold mb-3">Book Your Event</h1>
           <p className="text-white/60">
-            Check availability and submit your booking in a few easy steps. We&apos;ll send your
-            invoice within 24 hours.
+            Check availability and send a booking inquiry in a few easy steps. We&apos;ll follow up
+            with the details.
           </p>
+          <p className="text-white/50 text-sm mt-4">{PRICING_DISCLAIMER}</p>
         </div>
       </section>
 
@@ -39,7 +43,7 @@ export default async function BookingPage({
                 </div>
               }
             >
-              <BookingForm defaultPackage={params.package} />
+              <BookingForm defaultPackage={params.package} packages={packages} />
             </Suspense>
           </div>
         </div>

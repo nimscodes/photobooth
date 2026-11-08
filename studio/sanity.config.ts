@@ -5,8 +5,8 @@ import {schemaTypes} from './schemaTypes'
 export default defineConfig({
   name: 'default',
   title: 'Elite Event Images',
-  projectId: 'nt42z7dh',
-  dataset: 'production',
+  projectId: process.env.SANITY_STUDIO_PROJECT_ID ?? 'nt42z7dh',
+  dataset: process.env.SANITY_STUDIO_DATASET ?? 'production',
   plugins: [
     structureTool({
       structure: (S) =>

@@ -3,11 +3,11 @@ import { fetchSanity } from "../../sanity/lib/client";
 import TestimonialCarousel from "@/components/TestimonialCarousel";
 
 const DEFAULT_FEATURES = [
-  { icon: "🎥", title: "360 Video Booth", description: "Stunning slow-motion 360° videos your guests will share instantly." },
-  { icon: "📸", title: "Open-Air iPad Booth", description: "Modern iPad booth with instant digital sharing via QR, text, or email." },
-  { icon: "✨", title: "Custom Branding", description: "Add your logo, names, or custom message to every photo and video." },
-  { icon: "📱", title: "Instant Digital Sharing", description: "Guests share photos instantly — no waiting, no extra app needed." },
-  { icon: "🖼️", title: "Online Gallery", description: "Every event gets a private online gallery delivered after the event." },
+  { icon: "📸", title: "Digital Photo Booth", description: "A fun photo booth experience with unlimited sessions." },
+  { icon: "📱", title: "Digital Sharing", description: "Guests can share their photos digitally." },
+  { icon: "🖨️", title: "On-Site Printing", description: "Prints are available with select package tiers." },
+  { icon: "✨", title: "Personalized Templates", description: "Choose a photo template customized for your event." },
+  { icon: "🖼️", title: "Online Gallery", description: "An online gallery is included with select package tiers." },
   { icon: "👤", title: "Professional Attendant", description: "Our attendant manages everything so you can enjoy your event stress-free." },
 ];
 
@@ -63,7 +63,10 @@ export default async function Home() {
   const hero = { ...DEFAULT_HERO, ...homePage?.hero };
   const about = { ...DEFAULT_ABOUT, ...homePage?.about };
   const cta = { ...DEFAULT_CTA, ...homePage?.cta };
-  const features = homePage?.features?.length ? homePage.features : DEFAULT_FEATURES;
+  const availableFeatures = homePage?.features?.filter((feature) =>
+    !/(?:360|iPad|glam(?:our)?\s+booth)/i.test(`${feature.title} ${feature.description}`)
+  ) ?? [];
+  const features = availableFeatures.length ? availableFeatures : DEFAULT_FEATURES;
   const steps = homePage?.howItWorks?.length ? homePage.howItWorks : DEFAULT_STEPS;
   const testimonialList = testimonials.length > 0 ? testimonials : DEFAULT_TESTIMONIALS;
 

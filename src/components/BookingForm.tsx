@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { format } from "date-fns";
 import Calendar from "./Calendar";
-import { PACKAGES, ADD_ONS, EVENT_TYPES, BACKDROP_OPTIONS } from "@/lib/packages";
+import { ADD_ONS, EVENT_TYPES, BACKDROP_OPTIONS, PRICING_DISCLAIMER, type Package } from "@/lib/packages";
 
 type Intent = "book" | "questions" | "checking";
 
@@ -37,7 +37,7 @@ function Field({ label, required, children }: { label: string; required?: boolea
   );
 }
 
-export default function BookingForm({ defaultPackage }: { defaultPackage?: string }) {
+export default function BookingForm({ defaultPackage, packages }: { defaultPackage?: string; packages: Package[] }) {
   const [step, setStep] = useState(1);
   const [form, setForm] = useState<FormData>({ ...INIT, packageId: defaultPackage ?? "" });
   const [unavailable, setUnavailable] = useState<string[]>([]);
@@ -58,7 +58,7 @@ export default function BookingForm({ defaultPackage }: { defaultPackage?: strin
   }
 
   function calcTotal() {
-    const pkg = PACKAGES.find(p => p.id === form.packageId);
+    const pkg = packages.find(p => p.id === form.packageId);
     return (pkg?.price ?? 0) + form.addOns.reduce((s, id) => s + (ADD_ONS.find(a => a.id === id)?.price ?? 0), 0);
   }
 
@@ -93,16 +93,16 @@ export default function BookingForm({ defaultPackage }: { defaultPackage?: strin
   }
 
   if (done) {
-    const pkg = PACKAGES.find(p => p.id === form.packageId);
+    const pkg = packages.find(p => p.id === form.packageId);
     return (
       <div className="text-center py-16 px-6">
         <div className="text-5xl mb-4">✦</div>
         <h2 className="text-2xl font-bold text-white mb-3">
-          {form.intentType === "book" ? "Booking Received!" : form.intentType === "questions" ? "Message Sent!" : "Availability Confirmed!"}
+          {form.intentType === "book" ? "Inquiry Received!" : form.intentType === "questions" ? "Message Sent!" : "Availability Confirmed!"}
         </h2>
-        <p className="text-white/70 max-w-md mx-auto mb-6">
+              <p className="text-white/70 max-w-md mx-auto mb-6">
           {form.intentType === "book"
-            ? "We'll review your booking and send a draft invoice within 24 hours. Check your email for confirmation."
+            ? "We'll review your inquiry and follow up with a draft estimate and booking details."
             : form.intentType === "questions"
             ? "We received your question and will reply within 1–2 business days."
             : `${form.eventDate ? format(form.eventDate, "MMMM d, yyyy") : "That date"} is available! We sent you a confirmation email.`}
@@ -113,7 +113,7 @@ export default function BookingForm({ defaultPackage }: { defaultPackage?: strin
             <p className="text-white font-semibold">{pkg.name} Package</p>
             <p className="text-white/60 text-sm">{form.eventDate ? format(form.eventDate, "MMMM d, yyyy") : ""}</p>
             <p className="text-[#8B5CF6] font-bold text-2xl mt-3">${calcTotal().toLocaleString()}</p>
-            <p className="text-white/30 text-xs mt-1">Invoice sent as draft for your review before payment</p>
+            <p className="text-white/30 text-xs mt-1">Proposed starting estimate for discussion</p>
           </div>
         )}
       </div>
@@ -228,7 +228,7 @@ export default function BookingForm({ defaultPackage }: { defaultPackage?: strin
           <div>
             <p className="text-white font-medium text-sm mb-3">Select a Package <span className="text-[#8B5CF6]">*</span></p>
             <div className="grid sm:grid-cols-2 gap-3">
-              {PACKAGES.map(pkg => (
+              {packages.map(pkg => (
                 <button key={pkg.id} type="button" onClick={() => set("packageId", pkg.id)}
                   className={`p-4 rounded-xl border text-left transition-all ${form.packageId === pkg.id ? "border-[#8B5CF6] bg-[#8B5CF6]/10" : "border-white/10 hover:border-white/30"}`}>
                   <p className="font-semibold text-white">
@@ -287,7 +287,7 @@ export default function BookingForm({ defaultPackage }: { defaultPackage?: strin
           </Field>
 
           {form.packageId && (() => {
-            const pkg = PACKAGES.find(p => p.id === form.packageId)!;
+            const pkg = packages.find(p => p.id === form.packageId)!;
             const addTotal = form.addOns.reduce((s, id) => s + (ADD_ONS.find(a => a.id === id)?.price ?? 0), 0);
             return (
               <div className="bg-white/5 rounded-xl p-4 border border-white/10">
@@ -304,10 +304,12 @@ export default function BookingForm({ defaultPackage }: { defaultPackage?: strin
                 <div className="flex justify-between font-bold text-white mt-2 pt-2 border-t border-white/10">
                   <span>Total</span><span className="text-[#8B5CF6]">${pkg.price + addTotal}</span>
                 </div>
-                <p className="text-white/30 text-xs mt-2">Invoice sent as draft for review before payment</p>
+                <p className="text-white/30 text-xs mt-2">Proposed starting estimate for discussion</p>
               </div>
             );
           })()}
+
+          <p className="text-white/50 text-xs leading-relaxed">{PRICING_DISCLAIMER}</p>
 
           <div className="flex gap-3">
             <button type="button" onClick={() => setStep(1)} className="px-6 py-3 rounded-full border border-white/20 text-white/70 text-sm hover:border-white/40 hover:text-white transition-colors">

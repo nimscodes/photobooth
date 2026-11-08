@@ -1,7 +1,8 @@
 import { redirect, notFound } from "next/navigation";
 import { isAdminAuthenticated } from "@/lib/auth";
 import { getBookingById } from "@/lib/storage";
-import { PACKAGES, ADD_ONS } from "@/lib/packages";
+import { PRICING_DISCLAIMER } from "@/lib/packages";
+import { getPackages, getAddOns } from "@/lib/getPackages";
 import { getSiteSettings } from "@/lib/getSiteSettings";
 import InvoicePrintButton from "./InvoicePrintButton";
 
@@ -12,18 +13,20 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
   const { id } = await params;
   const booking = await getBookingById(id);
   if (!booking) notFound();
-  const settings = await getSiteSettings();
+  const [settings, packages, addOns] = await Promise.all([
+    getSiteSettings(),
+    getPackages(),
+    getAddOns(),
+  ]);
 
-  const pkg = PACKAGES.find((p) => p.id === booking.packageId);
+  const pkg = packages.find((p) => p.id === booking.packageId);
   const addOnsSelected = (booking.addOns ?? [])
-    .map((aid) => ADD_ONS.find((a) => a.id === aid))
-    .filter(Boolean) as typeof ADD_ONS;
+    .map((aid) => addOns.find((a) => a.id === aid))
+    .filter(Boolean) as typeof addOns;
   const addOnTotal = addOnsSelected.reduce((s, a) => s + a.price, 0);
   const subtotal = (pkg?.price ?? 0) + addOnTotal;
-  const deposit = Math.round(subtotal * 0.5);
-  const balance = subtotal - deposit;
 
-  const invoiceNum = `INV-${booking.id.slice(0, 8).toUpperCase()}`;
+  const invoiceNum = `EST-${booking.id.slice(0, 8).toUpperCase()}`;
   const today = new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
 
   return (
@@ -49,7 +52,7 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
             <p className="text-gray-500 text-sm">{settings.email}</p>
           </div>
           <div className="text-left sm:text-right">
-            <p className="text-3xl font-black text-[#8B5CF6]">INVOICE</p>
+            <p className="text-3xl font-black text-[#8B5CF6]">DRAFT ESTIMATE</p>
             <p className="text-gray-500 text-sm mt-1">#{invoiceNum}</p>
             <p className="text-gray-500 text-sm">Date: {today}</p>
             <span className={`inline-block mt-2 px-3 py-1 rounded-full text-xs font-bold ${
@@ -57,7 +60,7 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
               : booking.paymentStatus === "deposit" ? "bg-blue-100 text-blue-700"
               : "bg-yellow-100 text-yellow-700"
             }`}>
-              {booking.paymentStatus === "paid" ? "PAID" : booking.paymentStatus === "deposit" ? "DEPOSIT RECEIVED" : "PAYMENT DUE"}
+              {booking.paymentStatus === "paid" ? "PAID" : booking.paymentStatus === "deposit" ? "PAYMENT RECEIVED" : "FOR DISCUSSION"}
             </span>
           </div>
         </div>
@@ -121,19 +124,13 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
 
         {/* Totals */}
         <div className="flex flex-col items-end gap-2 mb-8">
-          <div className="flex justify-between w-48">
-            <span className="text-gray-500">Subtotal</span>
-            <span className="font-semibold">${subtotal.toLocaleString()}</span>
-          </div>
-          <div className="flex justify-between w-48 text-sm text-gray-400">
-            <span>50% Deposit</span>
-            <span>${deposit.toLocaleString()}</span>
-          </div>
-          <div className="flex justify-between w-48 pt-2 border-t-2 border-gray-100">
-            <span className="font-bold text-[#0B1020]">Balance Due</span>
-            <span className="font-bold text-[#8B5CF6] text-lg">${balance.toLocaleString()}</span>
+          <div className="flex justify-between w-64 pt-2 border-t-2 border-gray-100">
+            <span className="font-bold text-[#0B1020]">Proposed Starting Estimate</span>
+            <span className="font-bold text-[#8B5CF6] text-lg">${subtotal.toLocaleString()}</span>
           </div>
         </div>
+
+        <p className="mb-8 text-gray-500 text-xs">{PRICING_DISCLAIMER}</p>
 
         {/* Notes */}
         {booking.notes && (

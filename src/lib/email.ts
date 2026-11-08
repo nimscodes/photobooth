@@ -87,7 +87,7 @@ export async function sendBookingConfirmation(booking: Booking): Promise<void> {
           <tr><td style="padding:4px 0"><b>Add-ons:</b></td><td>${esc(addOnNames(booking.addOns))}</td></tr>
           <tr><td style="padding:4px 0"><b>Est. Total:</b></td><td><b>$${total}</b></td></tr>
         </table>
-        <p>We'll be in touch within 24 hours to confirm and send your <b>draft invoice</b> for review.</p>
+        <p>We'll be in touch to review your inquiry and follow up with a <b>draft estimate</b> and booking details.</p>
       ` : booking.intentType === "questions" ? `
         <p>Your question:</p>
         <blockquote style="border-left:3px solid #8B5CF6;padding-left:12px;color:#555">${esc(booking.question)}</blockquote>

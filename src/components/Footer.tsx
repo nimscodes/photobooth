@@ -56,7 +56,7 @@ export default function Footer({ settings }: { settings: SiteSettings }) {
           <div>
             <p className="text-white font-medium mb-3">Services</p>
             <ul className="space-y-2">
-              {["360 Video Booth", "Open-Air iPad Booth", "Weddings", "Birthdays", "Corporate Events", "Private Parties"].map(s => (
+              {["Digital Photo Booth", "On-Site Printing", "Personalized Templates", "Online Gallery", "Weddings", "Birthdays", "Corporate Events", "Private Parties"].map(s => (
                 <li key={s}>{s}</li>
               ))}
             </ul>
