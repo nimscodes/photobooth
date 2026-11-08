@@ -15,6 +15,12 @@ The website requires these production variables in Vercel:
 
 Optional integrations read additional settings from Vercel, including email/SMS, calendar, admin authentication, and CRM webhook credentials. Keep those values in Vercel and do not commit them.
 
+## Staging and Preview deployments
+
+Vercel Preview deployments use the separate Supabase project `photobooth-staging`. Set `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` for the Preview environment only; keep the production values scoped to Production. The staging database starts empty and should use synthetic test data.
+
+Apply the SQL files in `supabase/migrations/` to staging in filename order and verify the app there before applying database changes to production. Keep production email and calendar credentials scoped to Production so test bookings in Preview cannot contact customers or modify the live calendar. Store all secrets in Vercel, not in this repository.
+
 ## Sanity Studio
 
 The website's `/studio` route forwards to the hosted Sanity Studio. Its schemas and configuration live in `studio/`; the website's Sanity client lives in `sanity/`. The root Next.js TypeScript project excludes the standalone Studio package; build it with its own package configuration when needed.
