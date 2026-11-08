@@ -70,7 +70,7 @@ export default async function PackagesPage() {
                     ))}
                   </ul>
                 </div>
-                <Link href="/booking" className={`block text-center py-3 rounded-full text-sm font-semibold transition-colors ${pkg.popular ? "bg-white text-[#8B5CF6] hover:bg-white/90" : "border border-[#8B5CF6]/50 text-[#8B5CF6] hover:bg-[#8B5CF6] hover:text-white"}`}>
+                <Link href={`/booking?package=${pkg.id}`} className={`block text-center py-3 rounded-full text-sm font-semibold transition-colors ${pkg.popular ? "bg-white text-[#8B5CF6] hover:bg-white/90" : "border border-[#8B5CF6]/50 text-[#8B5CF6] hover:bg-[#8B5CF6] hover:text-white"}`}>
                   Inquire about {pkg.name}
                 </Link>
               </div>
