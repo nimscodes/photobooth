@@ -82,8 +82,44 @@ export async function POST(req: NextRequest) {
     }),
   ]).catch(err => console.error("[POST-SAVE]", err));
 
-  const crmUrl = process.env.CRM_DUBSADO_WEBHOOK_URL ?? process.env.CRM_HONEYBOOK_WEBHOOK_URL;
-  if (crmUrl) fetch(crmUrl, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(booking) }).catch(err => console.error("[CRM]", err));
+  const honeybookHookUrl = process.env.CRM_HONEYBOOK_WEBHOOK_URL;
+  if (honeybookHookUrl) {
+    const projectDetails = [
+      `Inquiry type: ${booking.intentType}`,
+      booking.eventType ? `Event type: ${booking.eventType === "Other" ? booking.eventTypeOther ?? "Other" : booking.eventType}` : null,
+      booking.eventStartTime ? `Event time: ${booking.eventStartTime}${booking.eventEndTime ? `–${booking.eventEndTime}` : ""}` : null,
+      booking.guestCount ? `Guest count: ${booking.guestCount}` : null,
+      booking.packageId ? `Package ID: ${booking.packageId}` : null,
+      booking.addOns?.length ? `Add-ons: ${booking.addOns.join(", ")}` : null,
+      booking.backdropChoice ? `Backdrop: ${booking.backdropChoice}` : null,
+      booking.venueName ? `Venue: ${[booking.venueName, booking.venueStreet, booking.venueCity, booking.venueState, booking.venueZip].filter(Boolean).join(", ")}` : null,
+      booking.question ? `Question: ${booking.question}` : null,
+      booking.notes ? `Notes: ${booking.notes}` : null,
+    ].filter(Boolean).join("\n");
+
+    try {
+      const hookResponse = await fetch(honeybookHookUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...booking,
+          bookingId: booking.id,
+          projectName: `${booking.fullName} — Photo Booth Inquiry`,
+          projectType: booking.eventType === "Other" ? booking.eventTypeOther ?? "Other" : booking.eventType ?? "Other",
+          projectDate: booking.eventDate,
+          projectLocation: [booking.venueName, booking.venueStreet, booking.venueCity, booking.venueState, booking.venueZip].filter(Boolean).join(", "),
+          projectDetails,
+        }),
+        signal: AbortSignal.timeout(10_000),
+      });
+
+      if (!hookResponse.ok) {
+        console.error(`[HoneyBook hook] Request failed with status ${hookResponse.status}.`);
+      }
+    } catch (err) {
+      console.error("[HoneyBook hook] Delivery failed:", err);
+    }
+  }
 
   return NextResponse.json({ success: true, id: booking.id }, { status: 201 });
 }

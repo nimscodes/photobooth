@@ -15,6 +15,8 @@ The website requires these production variables in Vercel:
 
 Optional integrations read additional settings from Vercel, including email/SMS, calendar, admin authentication, and CRM webhook credentials. Keep those values in Vercel and do not commit them.
 
+For HoneyBook intake through Zapier, set `CRM_HONEYBOOK_WEBHOOK_URL` in Vercel to the Zapier Catch Hook URL. The booking API sends the client contact details and event inquiry fields to that hook, which should be connected to HoneyBook's Create Project action. Keep the URL secret and scope it to Production until Preview has its own test Zap.
+
 ## Staging and Preview deployments
 
 Vercel Preview deployments use the separate Supabase project `photobooth-staging`. Set `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` for the Preview environment only; keep the production values scoped to Production. The staging database starts empty and should use synthetic test data.
