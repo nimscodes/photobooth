@@ -82,7 +82,7 @@ export async function getAddOns(): Promise<AddOn[]> {
     id: a.addOnId,
     name: a.name,
     price: a.price,
-    description: a.description,
+    description: a.description || (a.addOnId === "custom-overlay" ? "Upload your own logo file" : undefined),
     hasUpload: a.addOnId === "custom-overlay",
     imageUrl: a.image?.asset?.url,
     featured: a.featured ?? false,

@@ -20,7 +20,7 @@ const DEFAULT_WHO = {
   heading: "We Capture the Moments That Matter Most",
   paragraph1: "At Elite Event Images, we believe every celebration deserves unforgettable moments. Our modern photo booth experiences are designed to bring people together, capture genuine memories, and add excitement to every event.",
   paragraph2: "From weddings and birthdays to corporate events and private celebrations, we provide high-quality photo booth rentals that are stylish, interactive, and easy for guests of all ages to enjoy.",
-  paragraph3: "With premium backdrops, fun props, instant digital sharing, and fully customizable experiences, we help turn special moments into lasting memories that people talk about long after the event ends.",
+  paragraph3: "With fun props, instant digital sharing, and personalized photo layouts, we help turn special moments into lasting memories that people talk about long after the event ends.",
 };
 
 const DEFAULT_STATS = [
@@ -56,7 +56,14 @@ export default async function AboutPage() {
 
   const hero = { ...DEFAULT_HERO, ...data?.hero };
   const who = { ...DEFAULT_WHO, ...data?.whoWeAre };
-  const stats = data?.stats?.length ? data.stats : DEFAULT_STATS;
+  who.paragraph3 = (who.paragraph3 ?? DEFAULT_WHO.paragraph3)
+    .replace(/premium backdrops/gi, "polished setups")
+    .replace(/fully customizable experiences/gi, "personalized photo layouts");
+  const experienceStats = (data?.stats?.length ? data.stats : DEFAULT_STATS)
+    .filter(item => /years? experience/i.test(item.label ?? ""));
+  const stats = experienceStats.length
+    ? experienceStats
+    : DEFAULT_STATS.filter(item => /years? experience/i.test(item.label));
   const values = data?.values?.length ? data.values : DEFAULT_VALUES;
   const cta = { ...DEFAULT_CTA, ...data?.cta };
 
@@ -85,7 +92,7 @@ export default async function AboutPage() {
                 Book Your Event →
               </Link>
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 max-w-xs mx-auto w-full">
               {stats.map(item => (
                 <div key={item.label} className="bg-white/5 rounded-2xl p-6 text-center border border-white/5">
                   <p className="text-3xl font-bold text-[#8B5CF6] mb-1">{item.value}</p>

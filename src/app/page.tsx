@@ -39,7 +39,6 @@ const DEFAULT_CTA = {
 
 const DEFAULT_TESTIMONIALS = [
   { _id: "t1", name: "Ashley & Marcus W.", eventLabel: "Wedding · Fort Worth, TX", quote: "Elite Event Images made our wedding reception absolutely unforgettable. Every single guest used the photo booth — even our grandparents! The attendant was so professional and kept the line moving all night.", rating: 5 },
-  { _id: "t2", name: "Brianna T.", eventLabel: "Sweet 16 · Keller, TX", quote: "I hired them for my daughter's Sweet 16 and WOW. The 360 video booth was a massive hit — every kid was obsessed. The setup was gorgeous and they were on time, professional, and so easy to work with.", rating: 5 },
   { _id: "t3", name: "James K.", eventLabel: "Corporate Event · Arlington, TX", quote: "We used Elite Event Images for our company holiday party and it elevated the entire event. The custom branded overlays with our logo looked sharp, and instant digital sharing meant employees were posting on LinkedIn within minutes.", rating: 5 },
   { _id: "t4", name: "Destiny R.", eventLabel: "Birthday Party · Haslet, TX", quote: "Booked the Spotlight package for my 30th and it was worth every penny. The backdrop was stunning, the props were fun and on-theme, and the QR code sharing was so seamless. My friends are still talking about it weeks later!", rating: 5 },
   { _id: "t5", name: "The Nguyen Family", eventLabel: "Quinceañera · North Richland Hills, TX", quote: "From the moment I reached out, the communication was excellent. They arrived early, set up quickly, and our guests absolutely loved every minute. The online gallery was delivered the next day.", rating: 5 },
@@ -68,7 +67,8 @@ export default async function Home() {
   ) ?? [];
   const features = availableFeatures.length ? availableFeatures : DEFAULT_FEATURES;
   const steps = homePage?.howItWorks?.length ? homePage.howItWorks : DEFAULT_STEPS;
-  const testimonialList = testimonials.length > 0 ? testimonials : DEFAULT_TESTIMONIALS;
+  const testimonialList = (testimonials.length > 0 ? testimonials : DEFAULT_TESTIMONIALS)
+    .filter((testimonial) => !/360\s*(?:video\s*)?booth/i.test(`${testimonial.eventLabel} ${testimonial.quote}`));
 
   return (
     <>

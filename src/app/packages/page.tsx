@@ -132,7 +132,6 @@ export default async function PackagesPage() {
                   <div>
                     <p className="font-semibold text-white">{addon.name}</p>
                     {addon.description && <p className="text-xs text-white/45 mt-0.5">{addon.description}</p>}
-                    {addon.hasUpload && <p className="text-xs text-white/45 mt-0.5">Upload your own logo file</p>}
                   </div>
                   <span className={`font-bold text-lg ${addon.price < 0 ? "text-green-400" : "text-[#8B5CF6]"}`}>
                     {addon.price < 0 ? `-$${Math.abs(addon.price)}` : `+$${addon.price}`}

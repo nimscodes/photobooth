@@ -53,7 +53,7 @@ export default async function ContactPage() {
               <p className="text-white/65 text-sm leading-relaxed">
                 Weekends book fast — especially May through October. Check our{" "}
                 <a href="/booking" className="text-[#8B5CF6] hover:underline">availability calendar</a>{" "}
-                and lock in your date before it&apos;s gone.
+                and send us an inquiry about your date.
               </p>
             </div>
           </div>

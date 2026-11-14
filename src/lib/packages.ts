@@ -87,6 +87,7 @@ export const ADD_ONS: AddOn[] = [
     id: "custom-overlay",
     name: "Custom Logo Overlay",
     price: 100,
+    description: "Upload your own logo file",
     hasUpload: true,
   },
 ];
