@@ -23,7 +23,7 @@ export default function Navbar({ businessName }: { businessName: string }) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link href="/">
-            <Image src="/logo.png" alt={businessName} width={120} height={48} className="h-12 w-auto object-contain" priority />
+            <Image src="/logo.jpg" alt={businessName} width={120} height={120} className="h-14 w-14 object-contain" priority />
           </Link>
 
           <nav className="hidden md:flex items-center gap-1">

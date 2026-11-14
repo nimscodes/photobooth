@@ -9,7 +9,7 @@ export default function Footer({ settings }: { settings: SiteSettings }) {
         <div className="grid grid-cols-1 sm:grid-cols-4 gap-8">
           <div className="sm:col-span-1">
             <div className="mb-3">
-              <Image src="/logo.png" alt={settings.businessName} width={100} height={40} className="h-10 w-auto object-contain" />
+              <Image src="/logo.jpg" alt={settings.businessName} width={120} height={120} className="h-20 w-20 object-contain" />
             </div>
             <p className="leading-relaxed mb-4">
               {settings.tagline} for weddings, birthdays, corporate events, and celebrations across {settings.city} and surrounding areas.
