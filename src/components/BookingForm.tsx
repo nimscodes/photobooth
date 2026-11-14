@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { format } from "date-fns";
 import Calendar from "./Calendar";
-import { ADD_ONS, EVENT_TYPES, BACKDROP_OPTIONS, PRICING_DISCLAIMER, type Package } from "@/lib/packages";
+import { ADD_ONS, EVENT_TYPES, PRICING_DISCLAIMER, type Package } from "@/lib/packages";
 
 type Intent = "book" | "questions" | "checking";
 
@@ -13,14 +13,14 @@ interface FormData {
   eventStartTime: string; eventEndTime: string; eventType: string;
   eventTypeOther: string; guestCount: string; venueName: string;
   venueStreet: string; venueCity: string; venueState: string; venueZip: string;
-  packageId: string; addOns: string[]; backdropChoice: string; notes: string;
+  packageId: string; addOns: string[]; notes: string;
 }
 
 const INIT: FormData = {
   fullName: "", email: "", phone: "", eventDate: null, intentType: "book", question: "",
   eventStartTime: "", eventEndTime: "", eventType: "", eventTypeOther: "", guestCount: "",
   venueName: "", venueStreet: "", venueCity: "", venueState: "", venueZip: "",
-  packageId: "", addOns: [], backdropChoice: "", notes: "",
+  packageId: "", addOns: [], notes: "",
 };
 
 const input = "w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/30 text-sm focus:outline-none focus:border-[#8B5CF6]/50 transition-colors";
@@ -257,19 +257,6 @@ export default function BookingForm({ defaultPackage, packages }: { defaultPacka
                         </span>
                       </span>
                     </label>
-                    {checked && addon.hasOptions && (
-                      <div className="mt-2 ml-7">
-                        <p className="text-white/40 text-xs mb-2">Choose a backdrop:</p>
-                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                          {BACKDROP_OPTIONS.map(opt => (
-                            <button key={opt} type="button" onClick={() => set("backdropChoice", opt)}
-                              className={`text-xs px-3 py-2 rounded-lg border transition-colors ${form.backdropChoice === opt ? "border-[#8B5CF6] bg-[#8B5CF6]/10 text-white" : "border-white/10 text-white/50 hover:border-white/30"}`}>
-                              {opt}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    )}
                     {checked && addon.hasUpload && (
                       <div className="mt-2 ml-7">
                         <p className="text-white/40 text-xs mb-1">Upload logo (or email after booking):</p>

@@ -14,7 +14,6 @@ export interface AddOn {
   price: number;
   description?: string;
   hasUpload?: boolean;
-  hasOptions?: boolean;
   imageUrl?: string;
   featured?: boolean;
 }
@@ -43,6 +42,7 @@ export const PACKAGES: Package[] = [
       "Everything in Basic",
       "On-site printing",
       "Personalized photo template",
+      "80 photo prints included",
     ],
   },
   {
@@ -55,6 +55,7 @@ export const PACKAGES: Package[] = [
       "Everything in Signature",
       "Enhanced customization",
       "Online gallery",
+      "150 photo prints included",
     ],
   },
   {
@@ -67,6 +68,8 @@ export const PACKAGES: Package[] = [
       "Everything in Premier",
       "Additional print options",
       "Premium personalization",
+      "200 photo prints included",
+      "Prop Table",
     ],
   },
 ];
@@ -81,26 +84,10 @@ export const ADD_ONS: AddOn[] = [
     price: 150,
   },
   {
-    id: "audio-guestbook",
-    name: "Audio Guestbook",
-    price: 250,
-  },
-  {
     id: "custom-overlay",
     name: "Custom Logo Overlay",
     price: 100,
     hasUpload: true,
-  },
-  {
-    id: "branded-backdrop",
-    name: "Branded Backdrop",
-    price: 200,
-    hasOptions: true,
-  },
-  {
-    id: "floral-wall",
-    name: "Floral Wall",
-    price: 350,
   },
 ];
 
@@ -110,15 +97,6 @@ export const EVENT_TYPES = [
   "Corporate",
   "Party",
   "Other",
-];
-
-export const BACKDROP_OPTIONS = [
-  "White Sequin",
-  "Black Sequin",
-  "Gold Glam",
-  "Blush Pink",
-  "Greenery / Floral",
-  "Custom (describe in notes)",
 ];
 
 // ── Business Info ──────────────────────────────────────────────────────────────
